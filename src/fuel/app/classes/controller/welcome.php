@@ -57,7 +57,7 @@ class Controller_Welcome extends Controller
 	public function action_testdb()
 	{
 		try {
-			$result = \DB::query('SELECT 1 as test')->execute();
+			$result = \DB::query('SELECT 2 as test')->execute();
 
 			return \Response::forge('DB CONNECT OK: ' . $result[0]['test']);
 		} catch (\Exception $e) {
