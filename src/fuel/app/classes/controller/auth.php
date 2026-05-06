@@ -5,6 +5,7 @@ class Controller_Auth extends Controller_Template
     // Trang đăng ký thành viên mới
     public function action_register()
     {
+        $data = array();
         if (Input::method() == 'POST') {
             try {
                 // Tạo user mới bằng SimpleAuth
@@ -15,10 +16,10 @@ class Controller_Auth extends Controller_Template
                 );
                 Response::redirect('auth/login');
             } catch (Exception $e) {
-                echo "Lỗi: " . $e->getMessage();
+                $data['error'] = "Lỗi: " . $e->getMessage();
             }
         }
-        $this->template->content = View::forge('auth/register');
+        $this->template->content = View::forge('auth/register', $data);
     }
 
     // Trang đăng nhập
