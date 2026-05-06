@@ -18,7 +18,7 @@ return array(
 	 *
 	 */
 
-	'_root_' => 'welcome/index',
+	'_root_' => 'auth/login',
 
 	/**
 	 * -------------------------------------------------------------------------
@@ -40,4 +40,12 @@ return array(
 
 	'hello(/:name)?' => array('welcome/hello', 'name' => 'hello'),
 	'testdb' => array('welcome/testdb'),
+	/**
+	 * -------------------------
+	 * Admin routes
+	 * -------------------------
+	 */
+	'admin' => 'admin/index',
+	'admin/(:any)' => 'admin/$1',
+	
 );
