@@ -31,19 +31,6 @@ class Controller_Welcome extends Controller
 	{
 		return Response::forge(View::forge('welcome/index'));
 	}
-
-	/**
-	 * A typical "Hello, Bob!" type example.  This uses a Presenter to
-	 * show how to use them.
-	 *
-	 * @access  public
-	 * @return  Response
-	 */
-	public function action_hello()
-	{
-		return Response::forge(Presenter::forge('welcome/hello'));
-	}
-
 	/**
 	 * The 404 action for the application.
 	 *
@@ -53,15 +40,5 @@ class Controller_Welcome extends Controller
 	public function action_404()
 	{
 		return Response::forge(Presenter::forge('welcome/404'), 404);
-	}
-	public function action_testdb()
-	{
-		try {
-			$result = \DB::query('SELECT 2 as test')->execute();
-
-			return \Response::forge('DB CONNECT OK: ' . $result[0]['test']);
-		} catch (\Exception $e) {
-			return \Response::forge('DB ERROR: ' . $e->getMessage());
-		}
 	}
 }

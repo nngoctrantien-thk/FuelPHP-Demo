@@ -34,7 +34,7 @@ class Controller_Auth extends Controller_Template
                     // delete the remember-me cookie if present
                     \Auth::dont_remember_me();
                 }
-                Response::redirect('admin/index');
+                Response::redirect('post/index');
             } else {
                 $data['error'] = 'Sai tài khoản hoặc mật khẩu!';
             }

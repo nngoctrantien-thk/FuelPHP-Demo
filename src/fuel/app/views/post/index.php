@@ -8,8 +8,8 @@
                 </tr>
             </thead>
             <tbody>
-                <?php if (!empty($lstAdminQuery) || !empty($lstAdmin)): ?>
-                    <?php $list = !empty($lstAdminQuery) ? $lstAdminQuery : $lstAdmin; ?>
+                <?php if (!empty($lstPostsQuery) || !empty($lstPosts)): ?>
+                    <?php $list = !empty($lstPostsQuery) ? $lstPostsQuery : $lstPosts; ?>
                     <?php foreach ($list as $item): ?>
                         <tr>
                             <td>
@@ -25,7 +25,7 @@
                 <?php else: ?>
                     <tr>
                         <td colspan="2" class="text-center text-muted py-4">
-                            <p class="mb-0">Chưa có dữ liệu admin nào được tìm thấy.</p>
+                            <p class="mb-0">Chưa có dữ liệu Posts nào được tìm thấy.</p>
                         </td>
                     </tr>
                 <?php endif; ?>

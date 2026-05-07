@@ -28,24 +28,12 @@ return array(
 	 */
 
 	'_404_' => 'welcome/404',
-
-	/**
-	 * -------------------------------------------------------------------------
-	 *  Example for Presenter
-	 * -------------------------------------------------------------------------
-	 *
-	 *  A route for showing page using Presenter
-	 *
-	 */
-
-	'hello(/:name)?' => array('welcome/hello', 'name' => 'hello'),
-	'testdb' => array('welcome/testdb'),
 	/**
 	 * -------------------------
-	 * Admin routes
+	 * Post routes
 	 * -------------------------
 	 */
-	'admin' => 'admin/index',
-	'admin/(:any)' => 'admin/$1',
+	'posts' => 'post/index',
+	'posts/(:any)' => 'post/$1',
 	
 );
