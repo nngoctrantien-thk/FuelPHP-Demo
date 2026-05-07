@@ -6,8 +6,11 @@ return array(
     array(
       'default' => 
       array(
-        0 => '001_create_posts',
-        1 => '002_create_users',
+        0 => '002_create_users',
+        1 => '003_create_authors',
+        2 => '004_create_categories',
+        3 => '005_create_books',
+        4 => '007_create_borrows',
       ),
     ),
     'module' => 
