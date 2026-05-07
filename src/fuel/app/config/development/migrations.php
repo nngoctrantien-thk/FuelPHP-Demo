@@ -6,7 +6,7 @@ return array(
     array(
       'default' => 
       array(
-        0 => '001_create_admins',
+        0 => '001_create_posts',
         1 => '002_create_users',
       ),
     ),

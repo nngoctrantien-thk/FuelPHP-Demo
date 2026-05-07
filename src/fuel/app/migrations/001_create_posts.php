@@ -2,11 +2,11 @@
 
 namespace Fuel\Migrations;
 
-class Create_admins
+class Create_posts
 {
 	public function up()
 	{
-		\DBUtil::create_table('admins', array(
+		\DBUtil::create_table('posts', array(
 			'id' => array('type' => 'int', 'unsigned' => true, 'null' => false, 'auto_increment' => true, 'constraint' => 11),
 			'title' => array('constraint' => 50, 'null' => false, 'type' => 'varchar'),
 			'body' => array('null' => false, 'type' => 'text'),
@@ -18,6 +18,6 @@ class Create_admins
 
 	public function down()
 	{
-		\DBUtil::drop_table('admins');
+		\DBUtil::drop_table('posts');
 	}
 }

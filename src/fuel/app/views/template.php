@@ -16,7 +16,7 @@
 		<div class="content">
 			<div class="container mt-4">
 				<div class="d-flex justify-content-between align-items-center mb-4">
-					<h2>Quản lý Admin</h2>
+					<h2>Quản lý post</h2>
 					<button type="button"
 						class="btn btn-outline-danger btn-sm"
 						onclick="window.location.href='<?php echo Uri::create('auth/logout'); ?>'">
@@ -27,16 +27,16 @@
 				<?php $subnav = isset($subnav) ? $subnav : array(); ?>
 				<ul class="nav nav-pills mb-4">
 					<li class="nav-item">
-						<a class="nav-link <?php echo Arr::get($subnav, "index"); ?>" href="<?php echo Uri::create('admin/index'); ?>">Danh sách</a>
+						<a class="nav-link <?php echo Arr::get($subnav, "index"); ?>" href="<?php echo Uri::create('post/index'); ?>">Danh sách</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link <?php echo Arr::get($subnav, "create"); ?>" href="<?php echo Uri::create('admin/create'); ?>">Tạo mới</a>
+						<a class="nav-link <?php echo Arr::get($subnav, "create"); ?>" href="<?php echo Uri::create('post/create'); ?>">Tạo mới</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link <?php echo Arr::get($subnav, "update"); ?>" href="<?php echo Uri::create('admin/update'); ?>">Cập nhật</a>
+						<a class="nav-link <?php echo Arr::get($subnav, "update"); ?>" href="<?php echo Uri::create('post/update'); ?>">Cập nhật</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link <?php echo Arr::get($subnav, "delete"); ?>" href="<?php echo Uri::create('admin/delete'); ?>">Xóa</a>
+						<a class="nav-link <?php echo Arr::get($subnav, "delete"); ?>" href="<?php echo Uri::create('post/delete'); ?>">Xóa</a>
 					</li>
 				</ul>
 

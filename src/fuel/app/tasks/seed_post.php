@@ -2,24 +2,24 @@
 
 namespace Fuel\Tasks;
 
-class Seed
+class Seed_Post
 {
     public static function run()
     {
-        echo "Start seeding...\n";
+        echo "Start seeding posts ...\n";
 
-        \DB::delete('admins')->execute();
+        \DB::delete('posts')->execute();
 
         for ($i = 1; $i <= 10; $i++)
         {
-            \Model_Admin::forge([
+            \Model_Post::forge([
                 'title' => 'Title '.$i,
                 'body' => 'Body '.$i,
                 'user_id' => rand(1, 5),
             ])->save();
         }
 
-        echo "Seeding done.\n";
+        echo "Seeding posts done.\n";
         
     }
 }
