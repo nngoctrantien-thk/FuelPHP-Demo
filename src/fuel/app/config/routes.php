@@ -28,12 +28,8 @@ return array(
 	 */
 
 	'_404_' => 'welcome/404',
-	/**
-	 * -------------------------
-	 * Post routes
-	 * -------------------------
-	 */
-	'posts' => 'post/index',
-	'posts/(:any)' => 'post/$1',
-	
+	// admin dashboard
+    'admin' => 'admin/index',
+	// user
+	'user' => 'user/index',
 );

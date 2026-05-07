@@ -19,7 +19,6 @@ class Create_users
             'updated_at' => array('constraint' => 11, 'null' => false, 'type' => 'int', 'default' => 0), // Sửa lỗi ở đây
         ), array('id'));
 
-        // Thêm index Unique cho username và email để đảm bảo không bị trùng lặp
         \DBUtil::create_index('users', array('username', 'email'), 'username_email_unique', 'unique');
     }
 
