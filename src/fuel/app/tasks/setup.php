@@ -51,6 +51,7 @@ class Setup
         \Model_Book::forge([
             'title' => 'Kafka on the Shore',
             'isbn' => '123456789',
+            'image' => 'item-image8.jpg',
             'author_id' => 2,
             'category_id' => 1,
             'total_copies' => 10,

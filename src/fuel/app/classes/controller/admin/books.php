@@ -10,7 +10,6 @@ class Controller_Admin_Books extends Controller_Admin
 
 	public function action_index()
 	{
-
 		$data['books'] =
 			Service_BookService::get_list_books();
 
@@ -32,51 +31,91 @@ class Controller_Admin_Books extends Controller_Admin
 
 	public function action_create()
 	{
-
 		$data['authors'] =
 			Service_AuthorService::get_list_authors();
 
 		$data['categories'] =
 			Service_CategoryService::get_list_categories();
 
+		/*
+        |--------------------------------------------------------------------------
+        | VALIDATION ERRORS
+        |--------------------------------------------------------------------------
+        */
+
+		$data['errors'] = array();
+
 		if (Input::method() == 'POST') {
 
-			try {
+			$val = \Validation\BookValidation::validate();
 
-				Service_BookService::create_book(
+			if ($val->run()) {
 
-					Input::post('title'),
+				try {
+					$image = Service_UploadService::upload_image();
+					if (!$image) {
+						throw new Exception(
+							'Upload image failed.'
+						);
+					}
+					Service_BookService::create_book(
 
-					Input::post('isbn'),
+						Input::post('title'),
 
-					Input::post('image'),
+						Input::post('isbn'),
 
-					Input::post('author_id'),
+						$image,
 
-					Input::post('category_id'),
+						Input::post('author_id'),
 
-					Input::post('total_copies'),
+						Input::post('category_id'),
 
-					Input::post('available_copies')
-				);
+						Input::post('total_copies'),
+
+						Input::post('available_copies')
+					);
+
+					Session::set_flash(
+						'success',
+						'Book created successfully.'
+					);
+
+					Response::redirect(
+						'admin/books'
+					);
+				} catch (Exception $e) {
+
+					Session::set_flash(
+						'error',
+						$e->getMessage()
+					);
+				}
+			} else {
+
+				/*
+                |--------------------------------------------------------------------------
+                | FIELD ERRORS
+                |--------------------------------------------------------------------------
+                */
+
+				$data['errors'] = $val->error();
+
+				/*
+                |--------------------------------------------------------------------------
+                | FLASH ERRORS
+                |--------------------------------------------------------------------------
+                */
+
+				$messages = array();
+
+				foreach ($val->error() as $error) {
+
+					$messages[] = $error->get_message();
+				}
 
 				Session::set_flash(
-
-					'success',
-
-					'Book created successfully.'
-				);
-
-				Response::redirect(
-					'admin/books'
-				);
-			} catch (Exception $e) {
-
-				Session::set_flash(
-
-					'error',
-
-					$e->getMessage()
+					'errors',
+					$messages
 				);
 			}
 		}
@@ -99,7 +138,6 @@ class Controller_Admin_Books extends Controller_Admin
 
 	public function action_edit($id = null)
 	{
-
 		$book =
 			Service_BookService::get_book($id);
 
@@ -115,46 +153,63 @@ class Controller_Admin_Books extends Controller_Admin
 		$data['categories'] =
 			Service_CategoryService::get_list_categories();
 
+		$data['errors'] = array();
+
 		if (Input::method() == 'POST') {
 
-			try {
+			$val = \Validation\BookValidation::validate();
+			if ($val->run()) {
 
-				Service_BookService::update_book(
+				try {
+					$image = Service_UploadService::upload_image();
+					Service_BookService::update_book(
 
-					$id,
+						$id,
 
-					Input::post('title'),
+						Input::post('title'),
 
-					Input::post('isbn'),
+						Input::post('isbn'),
 
-					Input::post('image'),
+						$image,
 
-					Input::post('author_id'),
+						Input::post('author_id'),
 
-					Input::post('category_id'),
+						Input::post('category_id'),
 
-					Input::post('total_copies'),
+						Input::post('total_copies'),
 
-					Input::post('available_copies')
-				);
+						Input::post('available_copies')
+					);
+
+					Session::set_flash(
+						'success',
+						'Book updated successfully.'
+					);
+
+					Response::redirect(
+						'admin/books'
+					);
+				} catch (Exception $e) {
+
+					Session::set_flash(
+						'error',
+						$e->getMessage()
+					);
+				}
+			} else {
+
+				$data['errors'] = $val->error();
+
+				$messages = array();
+
+				foreach ($val->error() as $error) {
+
+					$messages[] = $error->get_message();
+				}
 
 				Session::set_flash(
-
-					'success',
-
-					'Book updated successfully.'
-				);
-
-				Response::redirect(
-					'admin/books'
-				);
-			} catch (Exception $e) {
-
-				Session::set_flash(
-
-					'error',
-
-					$e->getMessage()
+					'errors',
+					$messages
 				);
 			}
 		}
@@ -177,23 +232,18 @@ class Controller_Admin_Books extends Controller_Admin
 
 	public function action_delete($id = null)
 	{
-
 		try {
 
 			Service_BookService::delete_book($id);
 
 			Session::set_flash(
-
 				'success',
-
 				'Book deleted successfully.'
 			);
 		} catch (Exception $e) {
 
 			Session::set_flash(
-
 				'error',
-
 				$e->getMessage()
 			);
 		}

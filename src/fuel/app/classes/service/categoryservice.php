@@ -4,6 +4,26 @@ class Service_CategoryService
 {
     /*
     |--------------------------------------------------------------------------
+    | CLEAR CACHE
+    |--------------------------------------------------------------------------
+    */
+
+    protected static function clear_cache()
+    {
+        try {
+
+            Cache::delete(
+                CacheKeys::CATEGORIES_ALL
+            );
+
+        } catch (Exception $e) {
+
+            // ignore cache exception
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
     | CREATE CATEGORY
     |--------------------------------------------------------------------------
     */
@@ -11,6 +31,27 @@ class Service_CategoryService
     public static function create_category(
         $category_name
     ) {
+
+        $category_name = trim($category_name);
+
+        /*
+        |--------------------------------------------------------------------------
+        | CHECK DUPLICATE
+        |--------------------------------------------------------------------------
+        */
+
+        $exists = Model_Category::query()
+
+            ->where('category_name', $category_name)
+
+            ->get_one();
+
+        if ($exists) {
+
+            throw new Exception(
+                'Category already exists.'
+            );
+        }
 
         DB::start_transaction();
 
@@ -24,6 +65,14 @@ class Service_CategoryService
             $category->save();
 
             DB::commit_transaction();
+
+            /*
+            |--------------------------------------------------------------------------
+            | CLEAR CACHE
+            |--------------------------------------------------------------------------
+            */
+
+            self::clear_cache();
 
             return $category;
 
@@ -55,6 +104,29 @@ class Service_CategoryService
             );
         }
 
+        $category_name = trim($category_name);
+
+        /*
+        |--------------------------------------------------------------------------
+        | CHECK DUPLICATE
+        |--------------------------------------------------------------------------
+        */
+
+        $exists = Model_Category::query()
+
+            ->where('category_name', $category_name)
+
+            ->where('id', '!=', $category_id)
+
+            ->get_one();
+
+        if ($exists) {
+
+            throw new Exception(
+                'Category already exists.'
+            );
+        }
+
         DB::start_transaction();
 
         try {
@@ -65,6 +137,14 @@ class Service_CategoryService
             $category->save();
 
             DB::commit_transaction();
+
+            /*
+            |--------------------------------------------------------------------------
+            | CLEAR CACHE
+            |--------------------------------------------------------------------------
+            */
+
+            self::clear_cache();
 
             return $category;
 
@@ -100,12 +180,11 @@ class Service_CategoryService
         |--------------------------------------------------------------------------
         */
 
-        $book_exists = Model_Book::find('first', array(
+        $book_exists = Model_Book::query()
 
-            'where' => array(
-                array('category_id', $category_id)
-            )
-        ));
+            ->where('category_id', $category_id)
+
+            ->get_one();
 
         if ($book_exists) {
 
@@ -121,6 +200,14 @@ class Service_CategoryService
             $category->delete();
 
             DB::commit_transaction();
+
+            /*
+            |--------------------------------------------------------------------------
+            | CLEAR CACHE
+            |--------------------------------------------------------------------------
+            */
+
+            self::clear_cache();
 
         } catch (Exception $e) {
 
@@ -151,11 +238,37 @@ class Service_CategoryService
     public static function get_list_categories()
     {
 
-        return Model_Category::find('all', array(
+        try {
 
-            'order_by' => array(
-                'id' => 'desc'
-            )
-        ));
+            return Cache::get(
+                CacheKeys::CATEGORIES_ALL
+            );
+
+        } catch (CacheNotFoundException $e) {
+
+            $categories = Model_Category::find('all', array(
+
+                'order_by' => array(
+                    'id' => 'desc'
+                )
+            ));
+
+            /*
+            |--------------------------------------------------------------------------
+            | SAVE CACHE
+            |--------------------------------------------------------------------------
+            */
+
+            Cache::set(
+
+                CacheKeys::CATEGORIES_ALL,
+
+                $categories,
+
+                300
+            );
+
+            return $categories;
+        }
     }
 }

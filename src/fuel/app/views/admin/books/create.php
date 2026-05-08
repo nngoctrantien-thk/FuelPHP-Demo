@@ -1,217 +1,303 @@
 <div class="container-fluid">
 
-	<div class="row">
+    <div class="row">
 
-		<div class="col-lg-12 mx-auto">
+        <div class="col-lg-12 mx-auto">
 
-			<div class="card-style mb-30">
+            <div class="card-style mb-30">
 
-				<!-- HEADER -->
+                <!-- HEADER -->
 
-				<div class="d-flex
+                <div class="d-flex
                             justify-content-between
                             align-items-center
                             mb-4">
 
-					<h2 class="mb-0">
-						Create Book
-					</h2>
+                    <h2 class="mb-0">
+                        Create Book
+                    </h2>
 
-					<a href="/admin/books"
-						class="main-btn secondary-btn btn-hover">
+                    <a href="/admin/books"
+                       class="main-btn secondary-btn btn-hover">
 
-						Back
+                        Back
 
-					</a>
+                    </a>
 
-				</div>
+                </div>
 
-				<!-- FORM -->
+                <!-- FLASH MESSAGE -->
 
-				<form method="post">
+                <?= View::forge('admin/partials/flash'); ?>
 
-					<div class="row">
+                <!-- FORM -->
 
-						<!-- TITLE -->
+                <form method="post" enctype="multipart/form-data">
 
-						<div class="col-md-12">
+                    <div class="row">
 
-							<div class="input-style-1">
+                        <!-- TITLE -->
 
-								<label>
-									Title
-								</label>
+                        <div class="col-md-12">
 
-								<input type="text"
-									name="title"
-									placeholder="Enter book title"
-									class="form-control">
+                            <div class="input-style-1">
 
-							</div>
+                                <label>
+                                    Title
+                                </label>
 
-						</div>
+                                <input type="text"
+                                       name="title"
+                                       placeholder="Enter book title"
+                                       value="<?= Input::post('title'); ?>"
+                                       class="form-control <?= isset($errors['title']) ? 'is-invalid' : ''; ?>">
 
-						<!-- ISBN -->
+                                <?php if (isset($errors['title'])): ?>
 
-						<div class="col-md-6">
+                                    <div class="text-danger">
+                                        <?= $errors['title']?>
+                                    </div>
 
-							<div class="input-style-1">
+                                <?php endif; ?>
 
-								<label>
-									ISBN
-								</label>
+                            </div>
 
-								<input type="text"
-									name="isbn"
-									placeholder="Enter ISBN"
-									class="form-control">
+                        </div>
 
-							</div>
+                        <!-- ISBN -->
 
-						</div>
+                        <div class="col-md-6">
 
-						<!-- IMAGE -->
+                            <div class="input-style-1">
 
-						<div class="col-md-6">
+                                <label>
+                                    ISBN
+                                </label>
 
-							<div class="input-style-1">
+                                <input type="text"
+                                       name="isbn"
+                                       placeholder="Enter ISBN"
+                                       value="<?= Input::post('isbn'); ?>"
+                                       class="form-control <?= isset($errors['isbn']) ? 'is-invalid' : ''; ?>">
 
-								<label>
-									Image
-								</label>
+                                <?php if (isset($errors['isbn'])): ?>
 
-								<input type="text"
+                                    <div class="text-danger">
+
+                                        <?= $errors['isbn'] ?>
+
+                                    </div>
+
+                                <?php endif; ?>
+
+                            </div>
+
+                        </div>
+
+                        <!-- IMAGE -->
+
+                        <div class="col-md-6">
+
+                            <div class="input-style-1">
+
+                                <label>
+                                    Image
+                                </label>
+								<input type="file"
 									name="image"
-									placeholder="book.jpg"
-									class="form-control">
+									accept=".jpg,.jpeg,.png,.webp"
+									class=" <?= isset($errors['image']) ? 'is-invalid' : ''; ?>">
+                                <?php if (isset($errors['image'])): ?>
 
-							</div>
+                                    <div class="text-danger">
 
-						</div>
+                                        <?= $errors['image'] ?>
 
-						<!-- AUTHOR -->
+                                    </div>
 
-						<div class="col-md-6">
+                                <?php endif; ?>
 
-							<div class="select-style-1">
+                            </div>
 
-								<label>
-									Author
-								</label>
+                        </div>
 
-								<div class="select-position">
+                        <!-- AUTHOR -->
 
-									<select name="author_id">
+                        <div class="col-md-6">
 
-										<?php foreach ($authors as $author): ?>
+                            <div class="select-style-1">
 
-											<option value="<?= $author->id; ?>">
+                                <label>
+                                    Author
+                                </label>
 
-												<?= $author->name; ?>
+                                <div class="select-position">
 
-											</option>
+                                    <select name="author_id"
+                                            class="<?= isset($errors['author_id']) ? 'is-invalid' : ''; ?>">
 
-										<?php endforeach; ?>
+                                        <option value="">
+                                            Select Author
+                                        </option>
 
-									</select>
+                                        <?php foreach ($authors as $author): ?>
 
-								</div>
+                                            <option value="<?= $author->id; ?>"
+                                                <?= Input::post('author_id') == $author->id ? 'selected' : ''; ?>>
 
-							</div>
+                                                <?= $author->name; ?>
 
-						</div>
+                                            </option>
 
-						<!-- CATEGORY -->
+                                        <?php endforeach; ?>
 
-						<div class="col-md-6">
+                                    </select>
 
-							<div class="select-style-1">
+                                </div>
 
-								<label>
-									Category
-								</label>
+                                <?php if (isset($errors['author_id'])): ?>
 
-								<div class="select-position">
+                                    <div class="text-danger">
 
-									<select name="category_id">
+                                        <?= $errors['author_id'] ?>
 
-										<?php foreach ($categories as $category): ?>
+                                    </div>
 
-											<option value="<?= $category->id; ?>">
+                                <?php endif; ?>
 
-												<?= $category->category_name; ?>
+                            </div>
 
-											</option>
+                        </div>
 
-										<?php endforeach; ?>
+                        <!-- CATEGORY -->
 
-									</select>
+                        <div class="col-md-6">
 
-								</div>
+                            <div class="select-style-1">
 
-							</div>
+                                <label>
+                                    Category
+                                </label>
 
-						</div>
+                                <div class="select-position">
 
-						<!-- TOTAL COPIES -->
+                                    <select name="category_id"
+                                            class="<?= isset($errors['category_id']) ? 'is-invalid' : ''; ?>">
 
-						<div class="col-md-6">
+                                        <option value="">
+                                            Select Category
+                                        </option>
 
-							<div class="input-style-1">
+                                        <?php foreach ($categories as $category): ?>
 
-								<label>
-									Total Copies
-								</label>
+                                            <option value="<?= $category->id; ?>"
+                                                <?= Input::post('category_id') == $category->id ? 'selected' : ''; ?>>
 
-								<input type="number"
-									name="total_copies"
-									placeholder="0"
-									class="form-control">
+                                                <?= $category->category_name; ?>
 
-							</div>
+                                            </option>
 
-						</div>
+                                        <?php endforeach; ?>
 
-						<!-- AVAILABLE COPIES -->
+                                    </select>
 
-						<div class="col-md-6">
+                                </div>
 
-							<div class="input-style-1">
+                                <?php if (isset($errors['category_id'])): ?>
 
-								<label>
-									Available Copies
-								</label>
+                                    <div class="text-danger">
 
-								<input type="number"
-									name="available_copies"
-									placeholder="0"
-									class="form-control">
+                                        <?= $errors['category_id'] ?>
 
-							</div>
+                                    </div>
 
-						</div>
+                                <?php endif; ?>
 
-						<!-- BUTTON -->
+                            </div>
 
-						<div class="col-12 mt-3">
+                        </div>
 
-							<button type="submit"
-								class="main-btn primary-btn btn-hover">
+                        <!-- TOTAL COPIES -->
 
-								Save Book
+                        <div class="col-md-6">
 
-							</button>
+                            <div class="input-style-1">
 
-						</div>
+                                <label>
+                                    Total Copies
+                                </label>
 
-					</div>
+                                <input type="number"
+                                       name="total_copies"
+                                       placeholder="0"
+                                       value="<?= Input::post('total_copies'); ?>"
+                                       class="form-control <?= isset($errors['total_copies']) ? 'is-invalid' : ''; ?>">
 
-				</form>
+                                <?php if (isset($errors['total_copies'])): ?>
 
-			</div>
+                                    <div class="text-danger">
 
-		</div>
+                                        <?= $errors['total_copies'] ?>
 
-	</div>
+                                    </div>
+
+                                <?php endif; ?>
+
+                            </div>
+
+                        </div>
+
+                        <!-- AVAILABLE COPIES -->
+
+                        <div class="col-md-6">
+
+                            <div class="input-style-1">
+
+                                <label>
+                                    Available Copies
+                                </label>
+
+                                <input type="number"
+                                       name="available_copies"
+                                       placeholder="0"
+                                       value="<?= Input::post('available_copies'); ?>"
+                                       class="form-control <?= isset($errors['available_copies']) ? 'is-invalid' : ''; ?>">
+
+                                <?php if (isset($errors['available_copies'])): ?>
+
+                                    <div class="text-danger">
+
+                                        <?= $errors['available_copies'] ?>
+
+                                    </div>
+
+                                <?php endif; ?>
+
+                            </div>
+
+                        </div>
+
+                        <!-- BUTTON -->
+
+                        <div class="col-12 mt-3">
+
+                            <button type="submit"
+                                    class="main-btn primary-btn btn-hover">
+
+                                Save Book
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>

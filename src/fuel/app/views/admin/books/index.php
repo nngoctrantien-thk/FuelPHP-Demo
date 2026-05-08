@@ -23,7 +23,7 @@
                 </div>
 
                 <a href="/admin/books/create"
-                   class="main-btn primary-btn btn-hover">
+                    class="main-btn primary-btn btn-hover">
 
                     Create Book
 
@@ -112,7 +112,7 @@
                                     <div class="employee-image">
 
                                         <?= Asset::img(
-                                            $image,
+                                            'books/' . $image,
                                             array(
                                                 'style' => '
                                                     width:60px;
@@ -155,7 +155,7 @@
                                     <p>
 
                                         <?=
-                                            !empty($book->author)
+                                        !empty($book->author)
                                             ? $book->author->name
                                             : 'Unknown';
                                         ?>
@@ -171,7 +171,7 @@
                                     <p>
 
                                         <?=
-                                            !empty($book->category)
+                                        !empty($book->category)
                                             ? $book->category->category_name
                                             : 'Unknown';
                                         ?>
@@ -229,7 +229,7 @@
                                         <!-- EDIT -->
 
                                         <a href="/admin/books/edit/<?= $book->id; ?>"
-                                           class="text-warning me-2">
+                                            class="text-warning me-2">
 
                                             <i class="lni lni-pencil"></i>
 
@@ -238,8 +238,8 @@
                                         <!-- DELETE -->
 
                                         <a href="/admin/books/delete/<?= $book->id; ?>"
-                                           class="text-danger"
-                                           onclick="return confirm('Delete this book?')">
+                                            class="text-danger"
+                                            onclick="return confirm('Delete this book?')">
 
                                             <i class="lni lni-trash-can"></i>
 
