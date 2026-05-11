@@ -185,7 +185,7 @@
                                 <li class="nav-item">
 
                                     <a class="nav-link"
-                                        href="/user/borrow-history">
+                                        href="/user/borrows">
 
                                         Borrow History
 

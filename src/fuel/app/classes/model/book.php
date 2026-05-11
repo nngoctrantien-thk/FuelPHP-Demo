@@ -11,6 +11,7 @@ class Model_Book extends Model
         'title',
 
         'isbn',
+        'description',
 
         'image',
 
@@ -109,6 +110,18 @@ class Model_Book extends Model
             'isbn',
             'ISBN',
             'required|max_length[255]'
+        );
+
+        $val->add_field(
+            'description',
+            'Description',
+            'max_length[255]'
+        );
+
+         $val->add_field(
+            'image',
+            'Image',
+            'max_length[255]'
         );
 
         $val->add_field(

@@ -14,10 +14,15 @@
                 <div>
 
                     <h6 class="mb-10">
+
                         Books Management
+
                     </h6>
 
-                    <p class="text-sm">
+                    <p class="text-sm text-muted">
+
+                        Manage all books in library
+
                     </p>
 
                 </div>
@@ -30,6 +35,10 @@
                 </a>
 
             </div>
+
+            <!-- FLASH MESSAGE -->
+
+            <?= View::forge('admin/partials/flash'); ?>
 
             <!-- TABLE -->
 
@@ -66,6 +75,10 @@
                             </th>
 
                             <th>
+                                <h6>Description</h6>
+                            </th>
+
+                            <th>
                                 <h6>Available</h6>
                             </th>
 
@@ -73,7 +86,7 @@
                                 <h6>Status</h6>
                             </th>
 
-                            <th>
+                            <th class="text-center">
                                 <h6>Action</h6>
                             </th>
 
@@ -83,33 +96,35 @@
 
                     <tbody>
 
-                        <?php foreach ($books as $book): ?>
+                        <?php if (!empty($books)): ?>
 
-                            <?php
+                            <?php foreach ($books as $book): ?>
 
-                            $image = !empty($book->image)
-                                ? $book->image
-                                : 'no-image.jpg';
+                                <?php
 
-                            ?>
+                                $image = !empty($book['image'])
+                                    ? $book['image']
+                                    : 'no-image.jpg';
 
-                            <tr>
+                                ?>
 
-                                <!-- ID -->
+                                <tr>
 
-                                <td>
+                                    <!-- ID -->
 
-                                    <p>
-                                        <?= $book->id; ?>
-                                    </p>
+                                    <td>
 
-                                </td>
+                                        <p>
 
-                                <!-- IMAGE -->
+                                            <?= $book['id']; ?>
 
-                                <td>
+                                        </p>
 
-                                    <div class="employee-image">
+                                    </td>
+
+                                    <!-- IMAGE -->
+
+                                    <td>
 
                                         <?= Asset::img(
                                             'books/' . $image,
@@ -119,131 +134,182 @@
                                                     height:80px;
                                                     object-fit:cover;
                                                     border-radius:8px;
+                                                    border:1px solid #ddd;
                                                 ',
-                                                'alt' => $book->title
+                                                'alt' => $book['title']
                                             )
                                         ); ?>
 
-                                    </div>
+                                    </td>
 
-                                </td>
+                                    <!-- TITLE -->
 
-                                <!-- TITLE -->
+                                    <td class="min-width">
 
-                                <td class="min-width">
+                                        <p>
 
-                                    <p>
-                                        <?= $book->title; ?>
-                                    </p>
+                                            <?= $book['title']; ?>
 
-                                </td>
+                                        </p>
 
-                                <!-- ISBN -->
+                                    </td>
 
-                                <td class="min-width">
+                                    <!-- ISBN -->
 
-                                    <p>
-                                        <?= $book->isbn; ?>
-                                    </p>
+                                    <td class="min-width">
 
-                                </td>
+                                        <p>
 
-                                <!-- AUTHOR -->
+                                            <?= $book['isbn']; ?>
 
-                                <td class="min-width">
+                                        </p>
 
-                                    <p>
+                                    </td>
 
-                                        <?=
-                                        !empty($book->author)
-                                            ? $book->author->name
-                                            : 'Unknown';
-                                        ?>
+                                    <!-- AUTHOR -->
 
-                                    </p>
+                                    <td class="min-width">
 
-                                </td>
+                                        <p>
 
-                                <!-- CATEGORY -->
+                                            <?=
+                                            !empty($book['author'])
+                                                ? $book['author']-> name
+                                                : 'Unknown';
+                                            ?>
 
-                                <td class="min-width">
+                                        </p>
 
-                                    <p>
+                                    </td>
 
-                                        <?=
-                                        !empty($book->category)
-                                            ? $book->category->category_name
-                                            : 'Unknown';
-                                        ?>
+                                    <!-- CATEGORY -->
 
-                                    </p>
+                                    <td class="min-width">
 
-                                </td>
+                                        <p>
 
-                                <!-- AVAILABLE -->
+                                            <?=
+                                            !empty($book['category'])
+                                                ? $book['category']->category_name
+                                                : 'Unknown';
+                                            ?>
 
-                                <td class="min-width">
+                                        </p>
 
-                                    <p>
+                                    </td>
 
-                                        <?= $book->available_copies; ?>
+                                    <!-- DESCRIPTION -->
 
-                                        /
+                                    <td class="min-width">
 
-                                        <?= $book->total_copies; ?>
+                                        <p style="
+                                                max-width:220px;
+                                                white-space:nowrap;
+                                                overflow:hidden;
+                                                text-overflow:ellipsis;
+                                            ">
 
-                                    </p>
+                                            <?= !empty($book['short_description'])
+                                                ? $book['short_description']
+                                                : 'No description'; ?>
 
-                                </td>
+                                        </p>
 
-                                <!-- STATUS -->
+                                    </td>
 
-                                <td class="min-width">
+                                    <!-- AVAILABLE -->
 
-                                    <?php if ($book->available_copies > 0): ?>
+                                    <td class="min-width">
 
-                                        <span class="status-btn active-btn">
+                                        <p>
 
-                                            Available
+                                            <?= $book['available_copies']; ?>
 
-                                        </span>
+                                            /
 
-                                    <?php else: ?>
+                                            <?= $book['total_copies']; ?>
 
-                                        <span class="status-btn close-btn">
+                                        </p>
 
-                                            Out Stock
+                                    </td>
 
-                                        </span>
+                                    <!-- STATUS -->
 
-                                    <?php endif; ?>
+                                    <td class="min-width">
 
-                                </td>
+                                        <?php if ($book['available_copies'] > 0): ?>
 
-                                <!-- ACTION -->
+                                            <span class="status-btn active-btn">
 
-                                <td>
+                                                Available
 
-                                    <div class="action">
+                                            </span>
 
-                                        <!-- EDIT -->
+                                        <?php else: ?>
 
-                                        <a href="/admin/books/edit/<?= $book->id; ?>"
-                                            class="text-warning me-2">
+                                            <span class="status-btn close-btn">
 
-                                            <i class="lni lni-pencil"></i>
+                                                Out Stock
 
-                                        </a>
+                                            </span>
 
-                                        <!-- DELETE -->
+                                        <?php endif; ?>
 
-                                        <a href="/admin/books/delete/<?= $book->id; ?>"
-                                            class="text-danger"
-                                            onclick="return confirm('Delete this book?')">
+                                    </td>
 
-                                            <i class="lni lni-trash-can"></i>
+                                    <!-- ACTION -->
 
-                                        </a>
+                                    <td>
+
+                                        <div class="action
+                                                    justify-content-center">
+
+                                            <!-- VIEW -->
+
+                                            <a href="/admin/books/view/<?= $book['id']; ?>"
+                                                class="text-primary me-2">
+
+                                                <i class="lni lni-eye"></i>
+
+                                            </a>
+
+                                            <!-- EDIT -->
+
+                                            <a href="/admin/books/edit/<?= $book['id']; ?>"
+                                                class="text-warning me-2">
+
+                                                <i class="lni lni-pencil"></i>
+
+                                            </a>
+
+                                            <!-- DELETE -->
+
+                                            <a href="/admin/books/delete/<?= $book['id']; ?>"
+                                                class="text-danger"
+                                                onclick="return confirm('Delete this book?')">
+
+                                                <i class="lni lni-trash-can"></i>
+
+                                            </a>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            <?php endforeach; ?>
+
+                        <?php else: ?>
+
+                            <tr>
+
+                                <td colspan="10"
+                                    class="text-center py-4">
+
+                                    <div class="text-muted">
+
+                                        No books found.
 
                                     </div>
 
@@ -251,7 +317,7 @@
 
                             </tr>
 
-                        <?php endforeach; ?>
+                        <?php endif; ?>
 
                     </tbody>
 

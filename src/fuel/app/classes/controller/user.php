@@ -9,7 +9,7 @@ class Controller_User extends Controller_Template
         $data['books'] = \Model_Book::find(
             'all',
             array(
-                'limit' => 8,
+                'limit' => 4,
                 'order_by' => array(
                     'id' => 'desc'
                 )

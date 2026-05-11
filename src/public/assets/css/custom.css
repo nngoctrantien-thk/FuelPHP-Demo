@@ -1,0 +1,432 @@
+.salary-card {
+    width: 100%;
+    max-width: 79rem;
+
+    background-color: #FFF5F8;
+
+    display: flex;
+    justify-content: center;
+
+    padding: 4rem 2rem;
+
+    box-sizing: border-box;
+}
+
+.salary-card p {
+    margin: 0;
+}
+
+.salary-card label {
+    margin: 0;
+
+    font-size: 1.5rem;
+    line-height: 2.3rem;
+
+    color: #333333;
+}
+
+.salary-card option {
+    font-size: 2rem;
+    color: #444444;
+}
+
+.salary-card .card-body {
+    width: 100%;
+    max-width: 62.5rem;
+}
+
+/* =========================
+    HEADER
+========================= */
+
+.card-header {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    text-align: center;
+
+    gap: 1rem;
+}
+
+.card-header-first {
+    max-width: 44.8rem;
+
+    text-align: center;
+    font: normal normal normal 1.4rem/2.2rem Meiryo;
+    letter-spacing: 0px;
+    color: #333333;
+}
+
+.card-header-second {
+    max-width: 30.8rem;
+
+    text-align: center;
+    font: normal normal bold 1.4rem/2.2rem Meiryo;
+    color: #FF71A6;
+}
+
+/* =========================
+    WHITE CONTENT BOX
+========================= */
+
+.bg-card-content {
+    background: #FFFFFF;
+
+    border-radius: 0.5rem;
+
+    margin-top: 4rem;
+
+    padding: 2rem;
+
+    box-sizing: border-box;
+}
+
+/* =========================
+    TITLE ROW
+========================= */
+
+.card-content-item {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 2rem;
+    margin-top: -4rem;
+}
+
+.card-content-item-time,
+.card-content-item-date {
+    position: relative;
+
+    height: 4rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 0.8rem;
+
+    background: #FF8297;
+
+    border-radius: 999px;
+}
+
+.card-content-item-time p,
+.card-content-item-date p {
+    text-align: left;
+    font: normal normal bold 15px/23px Meiryo;
+    letter-spacing: 0px;
+    color: #FFFFFF;
+}
+
+/* tam giác dưới */
+
+.card-content-item-time::after,
+.card-content-item-date::after {
+    content: "";
+
+    position: absolute;
+
+    bottom: -0.8rem;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 0;
+    height: 0;
+
+    border-left: 0.8rem solid transparent;
+    border-right: 0.8rem solid transparent;
+    border-top: 0.8rem solid #FF8297;
+}
+
+/* =========================
+    SELECT ROW
+========================= */
+
+.card-content-item-row {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 2rem;
+
+    margin-top: 3rem;
+
+    flex-wrap: wrap;
+}
+
+/* group */
+
+.card-select-group {
+    display: flex;
+    align-items: center;
+
+    gap: 1rem;
+}
+
+/* wrapper */
+
+.card-select-parent-custom {
+    position: relative;
+}
+
+/* custom arrow */
+
+.card-select-parent-custom::after {
+    content: "";
+
+    position: absolute;
+
+    top: 50%;
+    right: 1.5rem;
+
+    transform: translateY(-50%);
+
+    width: 0;
+    height: 0;
+
+    border-left: 0.6rem solid transparent;
+    border-right: 0.6rem solid transparent;
+    border-top: 0.8rem solid #FF8297;
+
+    pointer-events: none;
+}
+
+/* select */
+
+.card-select-custom {
+    width: 18rem;
+    height: 6rem;
+
+    padding: 0 4rem 0 2rem;
+
+    border: 0.1rem solid #D9D9D9;
+    border-radius: 0.4rem;
+
+    background: #FFFFFF;
+
+    font-size: 3rem;
+    color: #444444;
+
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    outline: none;
+
+    box-sizing: border-box;
+
+    cursor: pointer;
+}
+
+/* =========================
+    RESULT BOX
+========================= */
+
+.card-result {
+    margin-top: 2rem;
+
+    height: 4.5rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 2rem;
+
+    background: #F8EEF1;
+
+    border-radius: 0.4rem;
+
+    font-size: 2rem;
+
+    color: #333333;
+}
+
+.card-result strong {
+    font-size: 4rem;
+    font-weight: bold;
+
+    color: #444444;
+}
+
+/* =========================
+    CLOSE ICON
+========================= */
+
+.card-close-icon {
+    position: relative;
+
+    width: 2.4rem;
+    height: 2.4rem;
+
+    flex-shrink: 0;
+}
+
+.card-close-icon::before,
+.card-close-icon::after {
+    content: "";
+
+    position: absolute;
+
+    top: 50%;
+    left: 50%;
+
+    width: 4.4rem;
+    height: 0.3rem;
+
+    background-color: #F6A5B5;
+
+    border-radius: 1rem;
+}
+
+.card-close-icon::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.card-close-icon::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+/* =========================
+    CLOCK ICON
+========================= */
+
+.time-icon {
+    position: relative;
+
+    width: 1.6rem;
+    height: 1.6rem;
+
+    border: 0.2rem solid #FFFFFF;
+    border-radius: 50%;
+}
+
+/* kim giờ */
+
+.time-icon::before {
+    content: "";
+
+    position: absolute;
+
+    width: 0.2rem;
+    height: 0.5rem;
+
+    background-color: #FFFFFF;
+
+    top: 0.15rem;
+    left: 50%;
+
+    transform: translateX(-50%);
+}
+
+/* kim phút */
+
+.time-icon::after {
+    content: "";
+
+    position: absolute;
+
+    width: 0.45rem;
+    height: 0.2rem;
+
+    background-color: #FFFFFF;
+
+    top: 50%;
+    left: 55%;
+
+    transform: translateX(-50%) rotate(60deg);
+}
+
+/* =========================
+    CALENDAR ICON
+========================= */
+
+.calendar-icon {
+    position: relative;
+
+    width: 1.8rem;
+    height: 1.8rem;
+
+    border: 0.2rem solid #FFFFFF;
+    border-radius: 0.3rem;
+}
+
+/* thanh ngang */
+
+.calendar-icon::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0.35rem;
+    left: 0;
+
+    width: 100%;
+    height: 0.2rem;
+
+    background: #FFFFFF;
+}
+
+/* dots */
+
+.calendar-icon::after {
+    content: "";
+
+    position: absolute;
+
+    top: 0.7rem;
+    left: 0.35rem;
+
+    width: 0.25rem;
+    height: 0.25rem;
+
+    background: #FFFFFF;
+
+    box-shadow:
+        0.5rem 0 #FFFFFF,
+        1rem 0 #FFFFFF,
+        0 0.5rem #FFFFFF,
+        0.5rem 0.5rem #FFFFFF,
+        1rem 0.5rem #FFFFFF;
+}
+
+@media (max-width: 768px) {
+
+    .card-content-item {
+        grid-template-columns: 1fr;
+    }
+
+    .card-content-item-row {
+        flex-direction: column;
+    }
+
+    .card-select-group {
+        width: 100%;
+
+        justify-content: center;
+    }
+
+    .card-select-custom {
+        width: 100%;
+        max-width: 20rem;
+    }
+
+    .card-result {
+        flex-wrap: wrap;
+
+        height: auto;
+
+        padding: 1rem;
+    }
+
+    .card-result strong {
+        text-align: center;
+        font: normal normal normal 20px/30px Meiryo;
+        letter-spacing: 0px;
+        color: #444444;
+    }
+}
