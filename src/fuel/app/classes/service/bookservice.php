@@ -146,10 +146,12 @@ class Service_BookService
     public static function get_list_books()
     {
         try {
+
             return Cache::get(
                 CacheKeys::BOOKS_ALL
             );
         } catch (CacheNotFoundException $e) {
+
             $books = Model_Book::find('all', array(
                 'related' => array(
                     'author',
@@ -159,12 +161,40 @@ class Service_BookService
                     'id' => 'desc'
                 )
             ));
+
+            $result = array();
+
+            foreach ($books as $book) {
+                $description = !empty($book->description)
+                    ? $book->description
+                    : 'No description';
+
+                $short_description =
+                    strlen($description) > 5
+                    ? substr($description, 0, 5) . '...'
+                    : $description;
+
+                $result[] = array(
+                    'id' => $book->id,
+                    'title' => $book->title,
+                    'isbn' => $book->isbn,
+                    'image' => $book->image,
+                    'description' => $book->description,
+                    'short_description' => $short_description,
+                    'available_copies' => $book->available_copies,
+                    'total_copies' => $book->total_copies,
+                    'author' => $book->author,
+                    'category' => $book->category,
+                );
+            }
+
             Cache::set(
                 CacheKeys::BOOKS_ALL,
-                $books,
+                $result,
                 300
             );
-            return $books;
+
+            return $result;
         }
     }
 }

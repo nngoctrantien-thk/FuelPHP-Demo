@@ -22,14 +22,6 @@
                     and borrow your favorite books easily.
 
                 </p>
-
-                <a href="/user/books"
-                   class="btn btn-dark btn-lg">
-
-                    Browse Books
-
-                </a>
-
             </div>
 
             <!-- RIGHT -->
@@ -180,7 +172,7 @@
                                 <div class="text-center mb-3">
 
                                     <?= Asset::img(
-                                        $image,
+                                        'books/' . $image,
                                         array(
                                             'class' => 'img-fluid rounded',
                                             'style' => '

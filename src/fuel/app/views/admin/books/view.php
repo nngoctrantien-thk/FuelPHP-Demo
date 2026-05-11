@@ -1,9 +1,83 @@
-<ul class="nav nav-pills">
-	<li class='<?php echo Arr::get($subnav, "index" ); ?>'><?php echo Html::anchor('admin/books/index','Index');?></li>
-	<li class='<?php echo Arr::get($subnav, "view" ); ?>'><?php echo Html::anchor('admin/books/view','View');?></li>
-	<li class='<?php echo Arr::get($subnav, "create" ); ?>'><?php echo Html::anchor('admin/books/create','Create');?></li>
-	<li class='<?php echo Arr::get($subnav, "edit" ); ?>'><?php echo Html::anchor('admin/books/edit','Edit');?></li>
-	<li class='<?php echo Arr::get($subnav, "delete" ); ?>'><?php echo Html::anchor('admin/books/delete','Delete');?></li>
+<div class="salary-card">
 
-</ul>
-<p>View</p>
+    <div class="card-body">
+
+        <div class="card-header">
+
+            <p class="card-header-first">
+                お店ページの「給与シミュレーション」に入れる情報を登録できます。
+                登録しておけば毎回の入力不要！
+            </p>
+
+            <p class="card-header-second">
+                「計算する」を押すだけで結果が確認できます！
+            </p>
+
+        </div>
+
+        <div class="bg-card-content">
+
+            <!-- title row -->
+            <div class="card-content-item">
+
+                <div class="card-content-item-time">
+                    <i class="time-icon"></i>
+                    <p>1日何時間働く？</p>
+                </div>
+
+                <div class="card-content-item-date">
+                    <i class="calendar-icon"></i>
+                    <p>週の出勤は？</p>
+                </div>
+
+            </div>
+
+            <!-- select row -->
+            <div class="card-content-item-row">
+
+                <div class="card-select-group">
+
+                    <div class="card-select-parent-custom">
+
+                        <select name="time" id="time" class="card-select-custom">
+                            <option>1</option>
+                            <option>2</option>
+                        </select>
+
+                    </div>
+
+                    <label for="time">時間</label>
+
+                </div>
+
+                <div class="card-close-icon"></div>
+
+                <div class="card-select-group">
+
+                    <div class="card-select-parent-custom">
+
+                        <select name="date" id="date" class="card-select-custom">
+                            <option>1</option>
+                            <option>2</option>
+                        </select>
+
+                    </div>
+
+                    <label for="date">日出勤</label>
+
+                </div>
+
+            </div>
+
+            <!-- result -->
+            <div class="card-result">
+                <span>1カ月で</span>
+                <strong>4</strong>
+                <span>日勤務</span>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

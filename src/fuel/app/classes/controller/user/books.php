@@ -2,19 +2,35 @@
 
 class Controller_User_Books extends Controller_User
 {
-
-	public function action_index()
+	public function action_view($id = null)
 	{
-		$data["subnav"] = array('index'=> 'active' );
-		$this->template->title = 'User/books &raquo; Index';
-		$this->template->content = View::forge('user/books/index', $data);
-	}
+		$data["subnav"] = array(
+			'view' => 'active'
+		);
 
-	public function action_view()
-	{
-		$data["subnav"] = array('view'=> 'active' );
-		$this->template->title = 'User/books &raquo; View';
-		$this->template->content = View::forge('user/books/view', $data);
+		$book = Model_Book::find($id);
+		if (!$book)
+		{
+			Session::set_flash(
+				'error',
+				'Book not found.'
+			);
+
+			return Response::redirect('/user/books');
+		}
+
+		$book->category_name = $book->category
+			? $book->category->category_name
+			: 'Uncategorized';
+
+		$data['book'] = $book;
+
+		$this->template->title = 'Book View';
+
+		$this->template->content = View::forge(
+			'user/books/view',
+			$data
+		);
 	}
 
 }
