@@ -27,6 +27,7 @@ class Service_BookService
     public static function create_book(
         $title,
         $isbn,
+        $description,
         $image,
         $author_id,
         $category_id,
@@ -40,6 +41,7 @@ class Service_BookService
                 'isbn' => $isbn,
                 'image' => $image,
                 'author_id' => $author_id,
+                'description' => $description,
                 'category_id' => $category_id,
                 'total_copies' => $total_copies,
                 'available_copies' => $available_copies,
@@ -64,6 +66,7 @@ class Service_BookService
         $book_id,
         $title,
         $isbn,
+        $description,
         $image,
         $author_id,
         $category_id,
@@ -81,6 +84,7 @@ class Service_BookService
         try {
             $book->title = $title;
             $book->isbn = $isbn;
+            $book->description = $description;
             $book->image = $image;
             $book->author_id = $author_id;
             $book->category_id = $category_id;
@@ -143,58 +147,214 @@ class Service_BookService
     |--------------------------------------------------------------------------
     */
 
-    public static function get_list_books()
+    public static function get_list_books($limit = null, $offset = null)
     {
+
+
+        $cache_key = CacheKeys::BOOKS_ALL
+            . '_' . (int)$limit
+            . '_' . (int)$offset;
+
         try {
 
-            return Cache::get(
-                CacheKeys::BOOKS_ALL
-            );
+            return Cache::get($cache_key);
         } catch (CacheNotFoundException $e) {
 
-            $books = Model_Book::find('all', array(
-                'related' => array(
-                    'author',
-                    'category',
-                ),
-                'order_by' => array(
-                    'id' => 'desc'
-                )
-            ));
+
+            $query = Model_Book::query()
+
+                ->related('author')
+
+                ->related('category')
+
+                ->order_by('id', 'desc');
+
+
+            if ($limit !== null) {
+
+                $query->rows_limit($limit);
+            }
+
+            if ($offset !== null) {
+
+                $query->rows_offset($offset);
+            }
+
+            $books = $query->get();
+
 
             $result = array();
 
             foreach ($books as $book) {
+
                 $description = !empty($book->description)
                     ? $book->description
                     : 'No description';
 
-                $short_description =
-                    strlen($description) > 5
-                    ? substr($description, 0, 5) . '...'
+                $short_description = strlen($description) > 50
+                    ? substr($description, 0, 50) . '...'
                     : $description;
 
                 $result[] = array(
+
                     'id' => $book->id,
+
                     'title' => $book->title,
+
                     'isbn' => $book->isbn,
+
                     'image' => $book->image,
+
                     'description' => $book->description,
+
                     'short_description' => $short_description,
+
                     'available_copies' => $book->available_copies,
+
                     'total_copies' => $book->total_copies,
+
                     'author' => $book->author,
+
                     'category' => $book->category,
                 );
             }
 
+
             Cache::set(
-                CacheKeys::BOOKS_ALL,
+                $cache_key,
                 $result,
                 300
             );
 
             return $result;
         }
+    }
+    public static function search_books(
+        $keyword = null,
+        $search_by = 'title',
+        $limit = null,
+        $offset = null
+    ) {
+
+        $query = Model_Book::query()
+
+            ->related('author')
+
+            ->related('category')
+
+            ->order_by('id', 'desc');
+
+
+        if (!empty($keyword)) {
+
+            switch ($search_by) {
+
+                case 'isbn':
+
+                    $query->where(
+                        'isbn',
+                        'like',
+                        '%' . $keyword . '%'
+                    );
+
+                    break;
+
+                case 'author':
+
+                    $query->related('author');
+
+                    $query->where(
+                        'author.name',
+                        'like',
+                        '%' . $keyword . '%'
+                    );
+
+                    break;
+
+                case 'category':
+
+                    $query->related('category');
+
+                    $query->where(
+                        'category.category_name',
+                        'like',
+                        '%' . $keyword . '%'
+                    );
+
+                    break;
+
+                default:
+
+                    $query->where(
+                        'title',
+                        'like',
+                        '%' . $keyword . '%'
+                    );
+
+                    break;
+            }
+        }
+
+        /*
+    |--------------------------------------------------------------------------
+    | PAGINATION
+    |--------------------------------------------------------------------------
+    */
+
+        if ($limit !== null) {
+
+            $query->rows_limit($limit);
+        }
+
+        if ($offset !== null) {
+
+            $query->rows_offset($offset);
+        }
+
+        $books = $query->get();
+
+        /*
+    |--------------------------------------------------------------------------
+    | FORMAT
+    |--------------------------------------------------------------------------
+    */
+
+        $result = array();
+
+        foreach ($books as $book) {
+
+            $description = !empty($book->description)
+                ? $book->description
+                : 'No description';
+
+            $short_description = strlen($description) > 50
+                ? substr($description, 0, 50) . '...'
+                : $description;
+
+            $result[] = array(
+
+                'id' => $book->id,
+
+                'title' => $book->title,
+
+                'isbn' => $book->isbn,
+
+                'image' => $book->image,
+
+                'description' => $book->description,
+
+                'short_description' => $short_description,
+
+                'available_copies' => $book->available_copies,
+
+                'total_copies' => $book->total_copies,
+
+                'author' => $book->author,
+
+                'category' => $book->category,
+            );
+        }
+
+        return $result;
     }
 }

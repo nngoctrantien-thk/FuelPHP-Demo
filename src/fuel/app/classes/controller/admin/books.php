@@ -1,5 +1,7 @@
 <?php
 
+use Fuel\Core\Pagination;
+
 class Controller_Admin_Books extends Controller_Admin
 {
 	public function action_view($id = null)
@@ -25,16 +27,110 @@ class Controller_Admin_Books extends Controller_Admin
 
 	public function action_index()
 	{
-		$data['books'] =
-			Service_BookService::get_list_books();
-		$this->template->title =
-			'Manage Books';
+		$keyword = trim(Input::get('keyword'));
 
-		$this->template->content =
-			View::forge(
-				'admin/books/index',
-				$data
-			);
+		$search_by = Input::get('search_by', 'title');
+
+
+
+		$count_query = Model_Book::query()
+
+			->related('author')
+
+			->related('category');
+
+		if (!empty($keyword)) {
+
+			switch ($search_by) {
+
+				case 'isbn':
+
+					$count_query->where(
+						'isbn',
+						'like',
+						'%' . $keyword . '%'
+					);
+
+					break;
+
+				case 'author':
+
+					$count_query->where(
+						'author.name',
+						'like',
+						'%' . $keyword . '%'
+					);
+
+					break;
+
+				case 'category':
+
+					$count_query->where(
+						'category.category_name',
+						'like',
+						'%' . $keyword . '%'
+					);
+
+					break;
+
+				default:
+
+					$count_query->where(
+						'title',
+						'like',
+						'%' . $keyword . '%'
+					);
+
+					break;
+			}
+		}
+
+
+
+		$config = array(
+
+			'pagination_url' =>
+			'/admin/books/index?keyword='
+				. urlencode($keyword)
+				. '&search_by='
+				. $search_by,
+
+			'total_items' => $count_query->count(),
+
+			'per_page' => 5,
+
+			'uri_segment' => 4,
+		);
+
+		$pagination = Pagination::forge(
+			'books_pagination',
+			$config
+		);
+
+
+
+		$data['books'] = Service_BookService::search_books(
+
+			$keyword,
+
+			$search_by,
+
+			$pagination->per_page,
+
+			$pagination->offset
+
+		);
+
+		$data['pagination'] = $pagination->render();
+
+
+
+		$this->template->title = 'Manage Books';
+
+		$this->template->content = View::forge(
+			'admin/books/index',
+			$data
+		);
 	}
 
 	/*
@@ -77,6 +173,8 @@ class Controller_Admin_Books extends Controller_Admin
 						Input::post('title'),
 
 						Input::post('isbn'),
+
+						Input::post('description'),
 
 						$image,
 
@@ -175,6 +273,7 @@ class Controller_Admin_Books extends Controller_Admin
 						$id,
 						Input::post('title'),
 						Input::post('isbn'),
+						Input::post('description'),
 						$image,
 						Input::post('author_id'),
 						Input::post('category_id'),

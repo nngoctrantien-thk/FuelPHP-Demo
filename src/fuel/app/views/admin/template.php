@@ -189,7 +189,37 @@
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
     <script src="/assets/js/bootstrap.bundle.min.js"></script>
     <script src="/assets/js/main.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
 
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#description'), {
+
+                toolbar: [
+                    'heading',
+                    '|',
+                    'bold',
+                    'italic',
+                    'underline',
+                    '|',
+                    'fontColor',
+                    'fontBackgroundColor',
+                    '|',
+                    'bulletedList',
+                    'numberedList',
+                    '|',
+                    'link',
+                    'insertTable',
+                    'blockQuote',
+                    '|',
+                    'undo',
+                    'redo'
+                ]
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
 </body>
 
 </html>

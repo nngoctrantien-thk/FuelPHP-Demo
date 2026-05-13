@@ -115,13 +115,7 @@ class Model_Book extends Model
         $val->add_field(
             'description',
             'Description',
-            'max_length[255]'
-        );
-
-         $val->add_field(
-            'image',
-            'Image',
-            'max_length[255]'
+            ''
         );
 
         $val->add_field(

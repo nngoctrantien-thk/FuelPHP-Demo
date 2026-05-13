@@ -70,7 +70,24 @@ class Create_books
 				'type' => 'int'
 			),
 
-		), array('id'));
+		),
+
+		array('id'),
+
+		array(
+			array(
+				'columns' => array('isbn'),
+				'unique' => true,
+			),
+
+			array(
+				'columns' => array('author_id'),
+			),
+
+			array(
+				'columns' => array('category_id'),
+			),
+		));
 	}
 
 	public function down()
