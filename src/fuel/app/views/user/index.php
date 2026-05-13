@@ -133,13 +133,13 @@
 
                 <h2 class="fw-bold">
 
-                    Latest Books
+                    Books
 
                 </h2>
 
                 <p>
 
-                    Recently added books in the library
+                    Explore our collection of books
 
                 </p>
 

@@ -21,7 +21,7 @@ services:
       MYSQL_USER: fueluser
       MYSQL_PASSWORD: fuelpass
     ports:
-      - "3306:3306"
+      - "3306:3309"
     volumes:
       - db_data:/var/lib/mysql
 
@@ -37,3 +37,9 @@ services:
 
 volumes:
   db_data:
+
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.25.0.0/16
