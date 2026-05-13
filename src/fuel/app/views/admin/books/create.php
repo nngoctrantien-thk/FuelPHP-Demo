@@ -104,10 +104,13 @@
                             </label>
 
                             <textarea
+                                id="description"
                                 name="description"
                                 class="form-control"
-                                rows="5"><?= Input::post('description', isset($book) ? $book->description : ''); ?></textarea>
-
+                                rows="5"><?= Input::post(
+                                                'description',
+                                                isset($book) ? $book->description : ''
+                                            ); ?></textarea>
                         </div>
                         <!-- IMAGE -->
 

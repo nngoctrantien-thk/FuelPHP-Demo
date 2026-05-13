@@ -123,7 +123,7 @@
                                     <p class="text-danger">
 
                                         <?= !empty($book->description)
-                                            ? nl2br($book->description)
+                                            ? strip_tags(html_entity_decode($book->description))
                                             : 'No description available.';
                                         ?>
 

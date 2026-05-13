@@ -20,7 +20,7 @@
                     </h2>
 
                     <a href="/admin/books"
-                       class="main-btn secondary-btn btn-hover">
+                        class="main-btn secondary-btn btn-hover">
 
                         Back
 
@@ -35,7 +35,7 @@
                 <!-- FORM -->
 
                 <form method="post"
-                      enctype="multipart/form-data">
+                    enctype="multipart/form-data">
 
                     <div class="row">
 
@@ -52,10 +52,10 @@
                                 </label>
 
                                 <input type="text"
-                                       name="title"
-                                       placeholder="Enter book title"
-                                       value="<?= Input::post('title', $book->title); ?>"
-                                       class="form-control <?= isset($errors['title']) ? 'is-invalid' : ''; ?>">
+                                    name="title"
+                                    placeholder="Enter book title"
+                                    value="<?= Input::post('title', $book->title); ?>"
+                                    class="form-control <?= isset($errors['title']) ? 'is-invalid' : ''; ?>">
 
                                 <?php if (isset($errors['title'])): ?>
 
@@ -84,10 +84,10 @@
                                 </label>
 
                                 <input type="text"
-                                       name="isbn"
-                                       placeholder="Enter ISBN"
-                                       value="<?= Input::post('isbn', $book->isbn); ?>"
-                                       class="form-control <?= isset($errors['isbn']) ? 'is-invalid' : ''; ?>">
+                                    name="isbn"
+                                    placeholder="Enter ISBN"
+                                    value="<?= Input::post('isbn', $book->isbn); ?>"
+                                    class="form-control <?= isset($errors['isbn']) ? 'is-invalid' : ''; ?>">
 
                                 <?php if (isset($errors['isbn'])): ?>
 
@@ -116,18 +116,18 @@
                                 </label>
 
                                 <input type="file"
-                                       name="image"
-                                       accept=".jpg,.jpeg,.png,.webp"
-                                       class="<?= isset($errors['image']) ? 'is-invalid' : ''; ?>">
+                                    name="image"
+                                    accept=".jpg,.jpeg,.png,.webp"
+                                    class="<?= isset($errors['image']) ? 'is-invalid' : ''; ?>">
 
                                 <?php if (!empty($book->image)): ?>
 
                                     <div class="mt-3">
 
                                         <img src="/assets/img/books/<?= $book->image; ?>"
-                                             width="100"
-                                             height="140"
-                                             style="
+                                            width="100"
+                                            height="140"
+                                            style="
                                                 border-radius:10px;
                                                 object-fit:cover;
                                                 border:1px solid #ddd;
@@ -164,14 +164,14 @@
                                 </label>
 
                                 <textarea
+                                    id="description"
                                     name="description"
                                     rows="5"
                                     placeholder="Enter book description"
-                                    class="form-control <?= isset($errors['description']) ? 'is-invalid' : ''; ?>"
-                                ><?= Input::post(
-                                        'description',
-                                        $book->description
-                                    ); ?></textarea>
+                                    class="form-control <?= isset($errors['description']) ? 'is-invalid' : ''; ?>"><?= Input::post(
+                                                                                                                        'description',
+                                                                                                                        $book->description
+                                                                                                                    ); ?></textarea>
 
                                 <?php if (isset($errors['description'])): ?>
 
@@ -202,7 +202,7 @@
                                 <div class="select-position">
 
                                     <select name="author_id"
-                                            class="<?= isset($errors['author_id']) ? 'is-invalid' : ''; ?>">
+                                        class="<?= isset($errors['author_id']) ? 'is-invalid' : ''; ?>">
 
                                         <option value="">
 
@@ -259,7 +259,7 @@
                                 <div class="select-position">
 
                                     <select name="category_id"
-                                            class="<?= isset($errors['category_id']) ? 'is-invalid' : ''; ?>">
+                                        class="<?= isset($errors['category_id']) ? 'is-invalid' : ''; ?>">
 
                                         <option value="">
 
@@ -314,10 +314,10 @@
                                 </label>
 
                                 <input type="number"
-                                       name="total_copies"
-                                       placeholder="0"
-                                       value="<?= Input::post('total_copies', $book->total_copies); ?>"
-                                       class="form-control <?= isset($errors['total_copies']) ? 'is-invalid' : ''; ?>">
+                                    name="total_copies"
+                                    placeholder="0"
+                                    value="<?= Input::post('total_copies', $book->total_copies); ?>"
+                                    class="form-control <?= isset($errors['total_copies']) ? 'is-invalid' : ''; ?>">
 
                                 <?php if (isset($errors['total_copies'])): ?>
 
@@ -346,10 +346,10 @@
                                 </label>
 
                                 <input type="number"
-                                       name="available_copies"
-                                       placeholder="0"
-                                       value="<?= Input::post('available_copies', $book->available_copies); ?>"
-                                       class="form-control <?= isset($errors['available_copies']) ? 'is-invalid' : ''; ?>">
+                                    name="available_copies"
+                                    placeholder="0"
+                                    value="<?= Input::post('available_copies', $book->available_copies); ?>"
+                                    class="form-control <?= isset($errors['available_copies']) ? 'is-invalid' : ''; ?>">
 
                                 <?php if (isset($errors['available_copies'])): ?>
 
@@ -370,7 +370,7 @@
                         <div class="col-12 mt-4">
 
                             <button type="submit"
-                                    class="main-btn primary-btn btn-hover">
+                                class="main-btn primary-btn btn-hover">
 
                                 Update Book
 
