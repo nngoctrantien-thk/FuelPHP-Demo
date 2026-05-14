@@ -2,144 +2,70 @@
 
 class Controller_User_Borrows extends Controller_User
 {
+    /**
+     * Helper lấy ID người dùng hiện tại
+     */
+    private function _user_id()
+    {
+        return Auth::get_user_id()[1];
+    }
 
-	/**
-	 * =====================================================
-	 * Borrow Book
-	 * =====================================================
-	 */
+    /**
+     * Danh sách sách đang mượn + Gợi ý sách cùng tác giả
+     */
+    public function action_index()
+    {
+        $user_id = $this->_user_id();
 
-	public function action_create($book_id = null)
-	{
-		if (!$book_id) {
-			Session::set_flash(
-				'error',
-				'Invalid book.'
-			);
+        // Sử dụng Service để lấy toàn bộ dữ liệu cần thiết cho trang Index
+        $borrows         = Service_BorrowService::get_active_borrows($user_id);
+        $suggested_books = Service_BorrowService::get_suggestions_by_borrowed_authors($user_id);
 
-			return Response::redirect('user/books');
-		}
+        $this->template->title = 'My Borrowed Books';
+        $this->template->content = View::forge('user/borrows/index', [
+            'borrows'         => $borrows,
+            'suggested_books' => $suggested_books
+        ]);
+    }
 
-		try {
-			Service_BorrowService::borrow_book(
-				Auth::get_user_id()[1],
-				$book_id
-			);
+    /**
+     * Thực hiện mượn sách
+     */
+    public function action_create($book_id = null)
+    {
+        if (!$book_id) {
+            Session::set_flash('error', 'Invalid book ID.');
+            return Response::redirect('user/books');
+        }
 
-			Session::set_flash(
-				'success',
-				'Borrow book successfully.'
-			);
-		} catch (Exception $e) {
-			Session::set_flash(
-				'error',
-				$e->getMessage()
-			);
-		}
+        try {
+            Service_BorrowService::borrow_book($this->_user_id(), $book_id);
+            Session::set_flash('success', 'Book borrowed successfully!');
+        } catch (Exception $e) {
+            Session::set_flash('error', $e->getMessage());
+        }
 
-		return Response::redirect('user/borrowed');
-	}
-	/**
-	 * =====================================================
-	 * Borrowed Books List
-	 * =====================================================
-	 */
+        // Chuyển hướng về trang danh sách đang mượn
+        return Response::redirect('user/borrowed');
+    }
 
-	public function action_index()
-	{
-		$user_id = Auth::get_user_id()[1];
+    /**
+     * Thực hiện trả sách
+     */
+    public function action_return($borrow_id = null)
+    {
+        if (!$borrow_id) {
+            Session::set_flash('error', 'Invalid borrow record.');
+            return Response::redirect('user/borrowed');
+        }
 
-		$borrows = Model_Borrow::query()
-			->related('book')
-			->related('book.author')
-			->where('user_id', $user_id)
-			->where('status', 'borrowing')
-			->order_by('id', 'desc')
-			->get();
+        try {
+            Service_BorrowService::return_book($borrow_id, $this->_user_id());
+            Session::set_flash('success', 'Book returned successfully.');
+        } catch (Exception $e) {
+            Session::set_flash('error', $e->getMessage());
+        }
 
-		$data['borrows'] = $borrows;
-
-		$this->template->title = 'My Borrowed Books';
-
-		$this->template->content = View::forge(
-			'user/borrows/index',
-			$data
-		);
-	}
-
-	/**
-	 * =====================================================
-	 * Return Book
-	 * =====================================================
-	 */
-
-	public function action_return($borrow_id = null)
-	{
-		if (!$borrow_id) {
-			Session::set_flash(
-				'error',
-				'Invalid borrow record.'
-			);
-
-			return Response::redirect('user/borrows');
-		}
-		$borrow = Model_Borrow::find($borrow_id);
-
-		if (!$borrow) {
-			Session::set_flash(
-				'error',
-				'Borrow record not found.'
-			);
-
-			return Response::redirect('user/borrows');
-		}
-		if ($borrow->user_id != Auth::get_user_id()[1]) {
-			Session::set_flash(
-				'error',
-				'Unauthorized access.'
-			);
-
-			return Response::redirect('user/borrows');
-		}
-		if ($borrow->status == 'returned') {
-			Session::set_flash(
-				'error',
-				'Book already returned.'
-			);
-
-			return Response::redirect('user/borrows');
-		}
-
-		try {
-			// update borrow
-
-			$borrow->status = 'returned';
-
-			$borrow->returned_at = time();
-
-			$borrow->save();
-
-			// update available copies
-
-			$book = Model_Book::find($borrow->book_id);
-
-			if ($book) {
-				$book->available_copies += 1;
-
-				$book->save();
-			}
-
-			Session::set_flash(
-				'success',
-				'Return book successfully.'
-			);
-		} catch (Exception $e) {
-			Session::set_flash(
-				'error',
-				$e->getMessage()
-			);
-		}
-
-		return Response::redirect('user/borrows');
-	}
+        return Response::redirect('user/borrowed');
+    }
 }

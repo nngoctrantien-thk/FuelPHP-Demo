@@ -4,389 +4,165 @@ use Fuel\Core\Pagination;
 
 class Controller_Admin_Books extends Controller_Admin
 {
-	public function action_view($id = null)
-	{
-		$book = Service_BookService::get_book($id);
-		if (!$book) {
-			throw new HttpNotFoundException;
-		}
-		$data['book'] = $book;
-		$this->template->title =
-			'View Book';
-		$this->template->content =
-			View::forge(
-				'admin/books/view',
-				$data
-			);
-	}
-	/*
-    |--------------------------------------------------------------------------
-    | INDEX
-    |--------------------------------------------------------------------------
-    */
+	// Cấu hình phân trang
+	const PER_PAGE = 8;
 
+	/**
+	 * Danh sách sách + Tìm kiếm + Phân trang
+	 */
 	public function action_index()
 	{
-		$keyword = trim(Input::get('keyword'));
-
+		$keyword   = trim(Input::get('keyword'));
 		$search_by = Input::get('search_by', 'title');
-
-
-
-		$count_query = Model_Book::query()
-
-			->related('author')
-
-			->related('category');
-
-		if (!empty($keyword)) {
-
-			switch ($search_by) {
-
-				case 'isbn':
-
-					$count_query->where(
-						'isbn',
-						'like',
-						'%' . $keyword . '%'
-					);
-
-					break;
-
-				case 'author':
-
-					$count_query->where(
-						'author.name',
-						'like',
-						'%' . $keyword . '%'
-					);
-
-					break;
-
-				case 'category':
-
-					$count_query->where(
-						'category.category_name',
-						'like',
-						'%' . $keyword . '%'
-					);
-
-					break;
-
-				default:
-
-					$count_query->where(
-						'title',
-						'like',
-						'%' . $keyword . '%'
-					);
-
-					break;
-			}
-		}
-
-
-
-		$config = array(
-
-			'pagination_url' =>
-			'/admin/books/index?keyword='
-				. urlencode($keyword)
-				. '&search_by='
-				. $search_by,
-
-			'total_items' => $count_query->count(),
-
-			'per_page' => 5,
-
-			'uri_segment' => 4,
-		);
-
-		$pagination = Pagination::forge(
-			'books_pagination',
-			$config
-		);
-
-
-
-		$data['books'] = Service_BookService::search_books(
-
-			$keyword,
-
-			$search_by,
-
-			$pagination->per_page,
-
-			$pagination->offset
-
-		);
-
-		$data['pagination'] = $pagination->render();
-
-
-
-		$this->template->title = 'Manage Books';
-
-		$this->template->content = View::forge(
-			'admin/books/index',
-			$data
-		);
+		$total_items = Service_BookService::count_search_results($keyword, $search_by);
+		$config = [
+			'pagination_url' => Uri::create('admin/books/index'),
+			'total_items'    => $total_items,
+			'per_page'       => self::PER_PAGE,
+			'uri_segment'    => 4,
+			'link_offset'    => '?' . http_build_query(['keyword' => $keyword, 'search_by' => $search_by]),
+			'wrapper'           => '<div class="pagination">{pagination}</div>',
+			'active'            => '<span class="active">{link}</span>',
+			'regular'           => '<span>{link}</span>',
+			'previous'          => '<span>{link}</span>',
+			'next'              => '<span>{link}</span>',
+			'previous-inactive' => '<span class="previous-inactive">{link}</span>',
+			'next-inactive'     => '<span class="next-inactive">{link}</span>',
+		];
+		$pagination = Pagination::forge('books_pagination', $config);
+		$data = [
+			'books' => Service_BookService::search_books($keyword, $search_by, $pagination->per_page, $pagination->offset),
+		];
+		$view = View::forge('admin/books/index', $data);
+		$view->set_safe('pagination', $pagination->render());
+		$this->template->content = $view;
 	}
 
-	/*
-    |--------------------------------------------------------------------------
-    | CREATE
-    |--------------------------------------------------------------------------
-    */
+	/**
+	 * Xem chi tiết sách
+	 */
+	public function action_view($id = null)
+	{
+		$book = $this->_find_book($id);
+		$this->template->title = 'View Book';
+		$this->template->content = View::forge('admin/books/view', ['book' => $book]);
+	}
 
+	/**
+	 * Thêm mới sách
+	 */
 	public function action_create()
 	{
-		$data['authors'] =
-			Service_AuthorService::get_list_authors();
-
-		$data['categories'] =
-			Service_CategoryService::get_list_categories();
-
-		/*
-        |--------------------------------------------------------------------------
-        | VALIDATION ERRORS
-        |--------------------------------------------------------------------------
-        */
-
-		$data['errors'] = array();
-
 		if (Input::method() == 'POST') {
-
 			$val = \Validation\BookValidation::validate();
-
 			if ($val->run()) {
-
 				try {
 					$image = Service_UploadService::upload_image();
-					if (!$image) {
-						throw new Exception(
-							'Upload image failed.'
-						);
-					}
-					Service_BookService::create_book(
-
-						Input::post('title'),
-
-						Input::post('isbn'),
-
-						Input::post('description'),
-
-						$image,
-
-						Input::post('author_id'),
-
-						Input::post('category_id'),
-
-						Input::post('total_copies'),
-
-						Input::post('available_copies')
-					);
-
-					Session::set_flash(
-						'success',
-						'Book created successfully.'
-					);
-
-					Response::redirect(
-						'admin/books'
-					);
+					if (!$image) throw new Exception('Vui lòng chọn ảnh hợp lệ.');
+					Service_BookService::create_book(Input::post(), $image);
+					Session::set_flash('success', 'Thêm sách mới thành công.');
+					Response::redirect('admin/books');
 				} catch (Exception $e) {
-
-					Session::set_flash(
-						'error',
-						$e->getMessage()
-					);
+					Session::set_flash('error', $e->getMessage());
 				}
 			} else {
-
-				/*
-                |--------------------------------------------------------------------------
-                | FIELD ERRORS
-                |--------------------------------------------------------------------------
-                */
-
-				$data['errors'] = $val->error();
-
-				/*
-                |--------------------------------------------------------------------------
-                | FLASH ERRORS
-                |--------------------------------------------------------------------------
-                */
-
-				$messages = array();
-
-				foreach ($val->error() as $error) {
-
-					$messages[] = $error->get_message();
-				}
-
-				Session::set_flash(
-					'errors',
-					$messages
-				);
+				$this->_handle_validation_errors($val);
 			}
 		}
-
-		$this->template->title =
-			'Create Book';
-
-		$this->template->content =
-			View::forge(
-				'admin/books/create',
-				$data
-			);
+		$this->_render_form('Create Book', 'admin/books/create');
 	}
-
-	/*
-    |--------------------------------------------------------------------------
-    | EDIT
-    |--------------------------------------------------------------------------
-    */
+	/**
+	 * Chỉnh sửa sách
+	 */
 	public function action_edit($id = null)
 	{
-		$book = Service_BookService::get_book($id);
-		if (!$book) {
-			throw new HttpNotFoundException;
-		}
-		$data['book'] = $book;
-		$data['authors'] = Service_AuthorService::get_list_authors();
-
-		$data['categories'] = Service_CategoryService::get_list_categories();
-		$data['errors'] = array();
+		$book = $this->_find_book($id);
 		if (Input::method() == 'POST') {
 			$val = \Validation\BookValidation::validate();
+
 			if ($val->run()) {
+				$new_image = null;
 				try {
 					DB::start_transaction();
-					$image = $book->image;
-					$new_image = null;
 					if (!empty($_FILES['image']['name'])) {
 						$new_image = Service_UploadService::upload_image();
-						$image = $new_image;
 					}
-					Service_BookService::update_book(
-						$id,
-						Input::post('title'),
-						Input::post('isbn'),
-						Input::post('description'),
-						$image,
-						Input::post('author_id'),
-						Input::post('category_id'),
-						Input::post('total_copies'),
-						Input::post('available_copies')
-					);
+					$image_to_save = $new_image ?: $book->image;
+					Service_BookService::update_book($id, Input::post(), $image_to_save);
 					DB::commit_transaction();
 					if ($new_image && $book->image) {
-						Service_UploadService::delete_image(
-							$book->image
-						);
+						Service_UploadService::delete_image($book->image);
 					}
-					Session::set_flash(
-						'success',
-						'Book updated successfully.'
-					);
-					Response::redirect(
-						'admin/books'
-					);
+					Session::set_flash('success', 'Cập nhật sách thành công.');
+					Response::redirect('admin/books');
 				} catch (Exception $e) {
 					DB::rollback_transaction();
-					if (!empty($new_image)) {
-						Service_UploadService::delete_image(
-							$new_image
-						);
-					}
-					Session::set_flash(
-						'error',
-						$e->getMessage()
-					);
+					if ($new_image) Service_UploadService::delete_image($new_image);
+					Session::set_flash('error', $e->getMessage());
 				}
 			} else {
-
-				$data['errors'] = $val->error();
-
-				$messages = array();
-
-				foreach ($val->error() as $error) {
-
-					$messages[] = $error->get_message();
-				}
-
-				Session::set_flash(
-					'errors',
-					$messages
-				);
+				$this->_handle_validation_errors($val);
 			}
 		}
-
-		$this->template->title =
-			'Edit Book';
-
-		$this->template->content =
-			View::forge(
-				'admin/books/edit',
-				$data
-			);
+		$this->_render_form('Edit Book', 'admin/books/edit', ['book' => $book]);
 	}
-
-	/*
-    |--------------------------------------------------------------------------
-    | DELETE
-    |--------------------------------------------------------------------------
-    */
+	/**
+	 * Xóa sách
+	 */
 	public function action_delete($id = null)
 	{
-		$book = Service_BookService::get_book($id);
-
-		if (!$book) {
-
-			throw new HttpNotFoundException;
-		}
+		$book = $this->_find_book($id);
 
 		if (Input::method() == 'POST') {
-
 			try {
-
 				DB::start_transaction();
 
+				$image_path = $book->image;
 				Service_BookService::delete_book($id);
 
 				DB::commit_transaction();
 
-				Service_UploadService::delete_image(
-					$book->image
-				);
+				Service_UploadService::delete_image($image_path);
 
-				Session::set_flash(
-					'success',
-					'Book deleted successfully.'
-				);
-
-				Response::redirect(
-					'admin/books'
-				);
+				Session::set_flash('success', 'Xóa sách thành công.');
+				Response::redirect('admin/books');
 			} catch (Exception $e) {
-
 				DB::rollback_transaction();
-
-				Session::set_flash(
-					'error',
-					$e->getMessage()
-				);
+				Session::set_flash('error', $e->getMessage());
 			}
 		}
 
-		$data['book'] = $book;
-		$this->template->title =
-			'Delete Book';
-		$this->template->content =
-			View::forge(
-				'admin/books/delete',
-				$data
-			);
+		$this->template->title = 'Delete Book';
+		$this->template->content = View::forge('admin/books/delete', ['book' => $book]);
+	}
+
+
+	/**
+	 * Tìm sách hoặc trả về 404
+	 */
+	private function _find_book($id)
+	{
+		$book = Service_BookService::get_book($id);
+		if (!$book) throw new HttpNotFoundException;
+		return $book;
+	}
+
+	private function _handle_validation_errors($val)
+	{
+		$messages = [];
+		foreach ($val->error() as $error) {
+			$messages[] = $error->get_message();
+		}
+		Session::set_flash('errors', $messages);
+	}
+
+	private function _render_form($title, $view, $extra_data = [])
+	{
+		$data = array_merge($extra_data, [
+			'authors'    => Service_AuthorService::get_list_authors(),
+			'categories' => Service_CategoryService::get_list_categories(),
+		]);
+		$this->template->title = $title;
+		$this->template->content = View::forge($view, $data);
 	}
 }

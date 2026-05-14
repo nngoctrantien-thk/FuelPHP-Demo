@@ -46,22 +46,24 @@ return array(
 	'admin/books/delete/(:num)' => 'admin/books/delete/$1',
 
 	'admin/books/view/(:num)' => 'admin/books/view/$1',
+	'admin/books/index/(:num)' => 'admin/books/index',
 
 	// ================= USER =================
+    
+    // 1. Khi vào localhost/user, trỏ thẳng về danh sách sách
+    'user' => 'user/books/index', 
 
-	'user' => 'user/index',
+    // 2. Khi vào localhost/user/books, cũng trỏ về index
+    'user/books' => 'user/books/index',
 
-	// ---------------- BOOKS ----------------
+    // 3. Quan trọng: Route để nhận diện số trang cho segment 4
+    // URL: user/books/index/2
+    'user/books/index/(:num)' => 'user/books/index',
 
-	'user/books' => 'user/books/index',
+    // 4. Chi tiết sách
+    'user/books/view/(:num)' => 'user/books/view/$1',
 
-	'user/books/view/(:num)' => 'user/books/view/$1',
-
-	// ---------------- BORROWS ----------------
-
-	'user/borrows/create/(:num)' => 'user/borrows/create/$1',
-
-	'user/borrowed' => 'user/borrows/index',
-
-	'user/borrows/return/(:num)' => 'user/borrows/return/$1',
+    // ---------------- BORROWS ----------------
+    'user/borrows/create/(:num)' => 'user/borrows/create/$1',
+    'user/borrowed'              => 'user/borrows/index',
 );
