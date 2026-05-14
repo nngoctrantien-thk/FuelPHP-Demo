@@ -13,7 +13,7 @@
 <body>
     <div class="login-form shadow-lg bg-white p-4 rounded">
         <h2 class="text-center mb-4">Đăng ký</h2>
-        
+         <?= View::forge('admin/partials/flash'); ?>
         <form method="post">
             <div class="mb-3">
                 <label class="form-label">Tài khoản</label>

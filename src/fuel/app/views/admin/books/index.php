@@ -358,18 +358,8 @@
 
                                         <div class="action
                                                     justify-content-center
-                                                    gap-2">
+                                                    gap-3" style="gap: 1rem;">
 
-                                            <!-- VIEW -->
-
-                                            <a href="/admin/books/view/<?= $book['id']; ?>"
-                                                class="text-primary">
-
-                                                <i class="lni lni-eye"></i>
-
-                                            </a>
-
-                                            <!-- EDIT -->
 
                                             <a href="/admin/books/edit/<?= $book['id']; ?>"
                                                 class="text-warning">
@@ -424,13 +414,9 @@
             <!-- PAGINATION -->
 
             <?php if (!empty($pagination)): ?>
-
                 <div class="pagination-wrapper mt-4">
-
-                    <?php echo html_entity_decode($pagination); ?>
-
+                    <?php echo $pagination; ?>
                 </div>
-
             <?php endif; ?>
 
         </div>
@@ -438,7 +424,6 @@
     </div>
 
 </div>
-
 <style>
     .search-card {
         border-radius: 14px;

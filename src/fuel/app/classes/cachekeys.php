@@ -7,12 +7,10 @@ class CacheKeys
     | BOOKS
     |--------------------------------------------------------------------------
     */
-
-    const BOOKS_ALL = 'books.all';
-
-    const BOOKS_LATEST = 'books.latest';
-
-    const BOOKS_POPULAR = 'books.popular';
+    const BOOKS_ALL      = 'books.all';
+    const BOOKS_LATEST   = 'books.latest';
+    const BOOKS_POPULAR  = 'books.popular';
+    const BOOKS_BY_CATEGORY = 'books.category.';
 
     /*
     |--------------------------------------------------------------------------
