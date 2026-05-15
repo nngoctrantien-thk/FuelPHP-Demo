@@ -50,19 +50,23 @@ return array(
 
 	// ================= USER =================
     
-    // 1. Khi vào localhost/user, trỏ thẳng về danh sách sách
+    // 1. Khi vào localhost/user trỏ thẳng về danh sách sách
     'user' => 'user/books/index', 
 
-    // 2. Khi vào localhost/user/books, cũng trỏ về index
+    // 2. Khi vào localhost/user/books cũng trỏ về index
     'user/books' => 'user/books/index',
 
-    // 3. Quan trọng: Route để nhận diện số trang cho segment 4
-    // URL: user/books/index/2
+	// 3. Khi vào localhost/user/books/index/2 sẽ trỏ về index với tham số trang là 2
     'user/books/index/(:num)' => 'user/books/index',
 
     // 4. Chi tiết sách
     'user/books/view/(:num)' => 'user/books/view/$1',
-
+	// 5. User profile
+	'user/profile' => 'user/profile/index',
+	// 6. change password
+	'user/profile/change_password' => 'user/profile/change_password',
+	// 7. Edit profile
+	'user/profile/edit' => 'user/profile/edit',
     // ---------------- BORROWS ----------------
     'user/borrows/create/(:num)' => 'user/borrows/create/$1',
     'user/borrowed'              => 'user/borrows/index',

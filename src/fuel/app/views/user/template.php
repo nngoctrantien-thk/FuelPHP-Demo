@@ -69,43 +69,37 @@
                     <!-- USER MENU -->
 
                     <div class="col-md-6 text-end">
-
                         <?php if (\Auth::check()): ?>
-
-                            <span class="me-3">
-
-                                Welcome,
-                                <strong>
-                                    <?= \Auth::get_screen_name(); ?>
-                                </strong>
-
-                            </span>
-
-                            <a
-                                class="btn btn-sm btn-dark" onclick="window.location.href='<?php echo Uri::create('auth/logout'); ?>';">
-
-                                Logout
-
-                            </a>
-
+                            <div class="dropdown d-inline-block">
+                                <button class="btn btn-sm btn-outline-dark dropdown-toggle" type="button" id="userMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-person-circle me-1"></i>
+                                    Welcome, <strong><?= \Auth::get_screen_name(); ?></strong>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenu">
+                                    <li>
+                                        <a class="dropdown-item" href="<?= Uri::create('user/profile'); ?>">
+                                            <i class="bi bi-person me-2"></i> Profile
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="<?= Uri::create('user/change_password'); ?>">
+                                            <i class="bi bi-shield-lock me-2"></i> Change Password
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item text-danger" href="<?= Uri::create('auth/logout'); ?>">
+                                            <i class="bi bi-box-arrow-right me-2"></i> Logout
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         <?php else: ?>
-
-                            <a href="/auth/login"
-                                class="btn btn-sm btn-outline-dark">
-
-                                Login
-
-                            </a>
-
-                            <a href="/auth/register"
-                                class="btn btn-sm btn-dark ms-2">
-
-                                Register
-
-                            </a>
-
+                            <a href="/auth/login" class="btn btn-sm btn-outline-dark">Login</a>
+                            <a href="/auth/register" class="btn btn-sm btn-dark ms-2">Register</a>
                         <?php endif; ?>
-
                     </div>
 
                 </div>

@@ -7,18 +7,16 @@ class Setup
     public function run()
     {
         echo "=== CREATE ADMIN ===\n";
-
-        // Sử dụng Model_User bạn vừa tạo để kiểm tra cho đồng bộ
         if (!\Model_User::find_by_username('admin'))
         {
             \Auth::create_user(
                 'admin',
                 '123456',
                 'admin@gmail.com',
-                100, // Group Admin
+                100,
                 array(
-                    'is_active' => 1,         // Kích hoạt luôn cho Admin
-                    'activation_token' => null // Không cần token
+                    'is_active' => 1, 
+                    'activation_token' => null
                 )
             );
 
