@@ -30,7 +30,7 @@ class Controller_Auth extends Controller_Template
                     'Thông tin đăng ký không hợp lệ.'
                 );
 
-                return;
+                return \Response::redirect('auth/register');
             }
 
             try {
@@ -149,7 +149,7 @@ class Controller_Auth extends Controller_Template
                     'Tên đăng nhập hoặc mật khẩu không chính xác.'
                 );
 
-                return;
+                return \Response::redirect('auth/login');
             }
 
             $user = $this->current_user();
@@ -267,15 +267,19 @@ class Controller_Auth extends Controller_Template
             );
         }
     }
-
     /**
      * HANDLE MAIL KÍCH HOẠT
      */
-    protected function handle_activation_mail($email, $username, $token)
-    {
+    protected function handle_activation_mail($email,$username,$token) {
         try {
-
-            $this->send_activation_email($email, $username, $token);
+            Service_QueueService::push(
+                'send_activation_mail',
+                [
+                    'email' => $email,
+                    'username' => $username,
+                    'token' => $token,
+                ]
+            );
 
             \Session::set_flash(
                 'success',
@@ -284,94 +288,13 @@ class Controller_Auth extends Controller_Template
         } catch (\Exception $e) {
 
             \Log::error(
-                'Mail Error: ' . $e->getMessage()
+                'Activation Mail Error: ' . $e->getMessage()
             );
 
             \Session::set_flash(
                 'success',
                 'Đăng ký thành công nhưng không gửi được email.'
             );
-        }
-    }
-
-    /**
-     * GỬI EMAIL KÍCH HOẠT
-     */
-    protected function send_activation_email($email_to, $username, $token)
-    {
-        $link = \Uri::create('auth/activate/' . $token);
-
-        $email = \Email::forge();
-
-        $email->from(
-            'no-reply@library.com',
-            'Hệ thống Thư viện'
-        );
-
-        $email->to($email_to);
-
-        $email->subject(
-            '🔑 Kích hoạt tài khoản Thư viện của bạn'
-        );
-
-        $html_body = "
-        <div style='background:#f0f0f0;padding:40px;font-family:sans-serif;'>
-            <div style='max-width:500px;margin:0 auto;background:#fff;border:4px solid #000;box-shadow:10px 10px 0 #000;padding:30px;'>
-
-                <h1 style='font-size:24px;font-weight:900;text-transform:uppercase;margin-top:0;'>
-                    Chào {$username}!
-                </h1>
-
-                <p style='font-size:16px;line-height:1.5;color:#333;'>
-                    Chào mừng bạn đến với hệ thống thư viện.
-                    Chỉ còn một bước nữa thôi để bắt đầu khám phá kho sách khổng lồ.
-                </p>
-
-                <div style='margin:30px 0;text-align:center;'>
-                    <a
-                        href='{$link}'
-                        style='display:inline-block;background:#000;color:#fff;text-decoration:none;padding:15px 30px;font-weight:900;font-size:18px;border:2px solid #000;'
-                    >
-                        XÁC THỰC TÀI KHOẢN
-                    </a>
-                </div>
-
-                <p style='font-size:14px;color:#666;'>
-                    Hoặc copy đường dẫn này dán vào trình duyệt:
-                </p>
-
-                <p style='font-size:12px;word-break:break-all;color:#000;background:#eee;padding:10px;'>
-                    {$link}
-                </p>
-
-                <hr style='border:none;border-top:2px solid #000;margin:20px 0;'>
-
-                <p style='font-size:12px;color:#999;margin-bottom:0;'>
-                    Nếu bạn không thực hiện đăng ký này, vui lòng bỏ qua email.
-                    <br>
-                    &copy; 2026 Thư viện số.
-                </p>
-
-            </div>
-        </div>
-        ";
-
-        $email->html_body($html_body);
-
-        $email->alt_body(
-            "Chào {$username}, vui lòng kích hoạt tài khoản tại link: {$link}"
-        );
-
-        try {
-
-            $email->send();
-        } catch (\EmailSendingException $e) {
-
-            \Log::error(
-                'Mail Error: ' . $e->getMessage()
-            );
-
-            throw $e;
         }
     }
 }
