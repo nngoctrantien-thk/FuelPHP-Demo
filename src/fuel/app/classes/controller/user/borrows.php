@@ -45,7 +45,6 @@ class Controller_User_Borrows extends Controller_User
             Session::set_flash('error', $e->getMessage());
         }
 
-        // Chuyển hướng về trang danh sách đang mượn
         return Response::redirect('user/borrowed');
     }
 
