@@ -52,7 +52,7 @@ class Service_BorrowService
     {
         DB::start_transaction();
         try {
-            // LOCK ROW
+            // LOCK ROW DB để tránh tình trạng race condition khi nhiều người cùng mượn 1 cuốn sách có số lượng ít
             $book = Model_Book::query()
                 ->where('id', $book_id)
                 ->for_update()
