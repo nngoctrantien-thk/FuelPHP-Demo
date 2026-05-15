@@ -12,29 +12,38 @@ class Controller_Admin_Books extends Controller_Admin
 	 */
 	public function action_index()
 	{
-		$keyword   = trim(Input::get('keyword'));
+		$keyword   = trim(Input::get('keyword', ''));
 		$search_by = Input::get('search_by', 'title');
-		$total_items = Service_BookService::count_search_results($keyword, $search_by);
-		$config = [
-			'pagination_url' => Uri::create('admin/books/index'),
-			'total_items'    => $total_items,
-			'per_page'       => self::PER_PAGE,
-			'uri_segment'    => 4,
-			'link_offset'    => '?' . http_build_query(['keyword' => $keyword, 'search_by' => $search_by]),
-			'wrapper'           => '<div class="pagination">{pagination}</div>',
-			'active'            => '<span class="active">{link}</span>',
-			'regular'           => '<span>{link}</span>',
-			'previous'          => '<span>{link}</span>',
-			'next'              => '<span>{link}</span>',
-			'previous-inactive' => '<span class="previous-inactive">{link}</span>',
-			'next-inactive'     => '<span class="next-inactive">{link}</span>',
-		];
-		$pagination = Pagination::forge('books_pagination', $config);
-		$data = [
-			'books' => Service_BookService::search_books($keyword, $search_by, $pagination->per_page, $pagination->offset),
-		];
-		$view = View::forge('admin/books/index', $data);
-		$view->set_safe('pagination', $pagination->render());
+
+		$pagination = Service_PaginationService::forge(
+			'books_pagination',
+			'admin/books/index',
+			Service_BookService::count_search_results(
+				$keyword,
+				$search_by
+			),
+			self::PER_PAGE,
+			4,
+			[
+				'keyword'   => $keyword,
+				'search_by' => $search_by
+			]
+		);
+
+		$view = View::forge('admin/books/index', [
+			'books' => Service_BookService::search_books(
+				$keyword,
+				$search_by,
+				$pagination->per_page,
+				$pagination->offset
+			),
+		]);
+
+		$view->set_safe(
+			'pagination',
+			$pagination->render()
+		);
+		$this->template->title = 'Books Management';
 		$this->template->content = $view;
 	}
 
@@ -53,7 +62,7 @@ class Controller_Admin_Books extends Controller_Admin
 	 */
 	public function action_create()
 	{
-		if (Input::method() == 'POST') {
+		if (Input::method() === 'POST') {
 			$val = \Validation\BookValidation::validate();
 			if ($val->run()) {
 				try {
@@ -77,7 +86,7 @@ class Controller_Admin_Books extends Controller_Admin
 	public function action_edit($id = null)
 	{
 		$book = $this->_find_book($id);
-		if (Input::method() == 'POST') {
+		if (Input::method() === 'POST') {
 			$val = \Validation\BookValidation::validate();
 
 			if ($val->run()) {
@@ -146,13 +155,12 @@ class Controller_Admin_Books extends Controller_Admin
 		if (!$book) throw new HttpNotFoundException;
 		return $book;
 	}
-
+	
 	private function _handle_validation_errors($val)
 	{
-		$messages = [];
-		foreach ($val->error() as $error) {
-			$messages[] = $error->get_message();
-		}
+		$messages = array_map(function ($error) {
+    		return $error->get_message();
+		}, $val->error());
 		Session::set_flash('errors', $messages);
 	}
 

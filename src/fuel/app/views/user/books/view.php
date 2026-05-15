@@ -73,7 +73,7 @@ $description  = !empty($book->description)
                                 </div>
 
                                 <div class="d-flex flex-wrap gap-3">
-                                    <a href="/user/books" class="btn btn-outline-dark btn-lg px-4 fw-bold">
+                                    <a href="/user/borrows" class="btn btn-outline-dark btn-lg px-4 fw-bold">
                                         Back to Library
                                     </a>
                                     <?php if ($book->available_copies > 0): ?>
