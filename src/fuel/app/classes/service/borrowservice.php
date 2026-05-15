@@ -21,7 +21,7 @@ class Service_BorrowService
     public static function get_suggestions_by_borrowed_authors($user_id)
     {
         $borrows = self::get_active_borrows($user_id);
-        
+
         if (empty($borrows)) return [];
 
         $author_ids = [];
@@ -50,28 +50,37 @@ class Service_BorrowService
      */
     public static function borrow_book($user_id, $book_id)
     {
-        $book = Model_Book::find($book_id);
-
-        if (!$book) throw new Exception('Book not found.');
-        
-        if ($book->available_copies <= 0) {
-            throw new Exception('This book is currently out of stock.');
-        }
-
-        // Kiểm tra xem user có đang mượn cuốn này mà chưa trả không
-        $is_borrowing = Model_Borrow::query()
-            ->where('user_id', $user_id)
-            ->where('book_id', $book_id)
-            ->where('status', 'borrowing')
-            ->get_one();
-
-        if ($is_borrowing) {
-            throw new Exception('You are already borrowing this book.');
-        }
-
         DB::start_transaction();
         try {
+            // LOCK ROW
+            $book = Model_Book::query()
+                ->where('id', $book_id)
+                ->for_update()
+                ->get_one();
+
+            if (!$book) {
+                throw new Exception('Book not found.');
+            }
+
+            // check stock SAU KHI LOCK
+            if ($book->available_copies <= 0) {
+
+                throw new Exception('This book is currently out of stock.');
+            }
+
+            $is_borrowing = Model_Borrow::query()
+                ->where('user_id', $user_id)
+                ->where('book_id', $book_id)
+                ->where('status', 'borrowing')
+                ->get_one();
+
+            if ($is_borrowing) {
+
+                throw new Exception('You are already borrowing this book.');
+            }
+
             $borrow = Model_Borrow::forge([
+
                 'user_id'     => $user_id,
                 'book_id'     => $book_id,
                 'borrowed_at' => time(),
@@ -81,14 +90,17 @@ class Service_BorrowService
 
             $borrow->save();
 
-            // Cập nhật kho sách
             $book->available_copies -= 1;
+
             $book->save();
 
             DB::commit_transaction();
+
             return $borrow;
         } catch (Exception $e) {
+
             DB::rollback_transaction();
+
             throw $e;
         }
     }
